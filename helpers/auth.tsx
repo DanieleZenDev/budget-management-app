@@ -1,0 +1,118 @@
+import {
+	ExpensesData,
+	HashedPassword,
+	IncomesData,
+	SavingsData,
+	UserData,
+} from "@/types";
+import { hash, compare } from "bcryptjs";
+
+export async function hashPassword(enteredPassword: string) {
+	const hashedPassword = await hash(enteredPassword, 12);
+	return hashedPassword;
+}
+
+export async function verifyPassword({
+	enteredPassword,
+	hashedPassword,
+}: HashedPassword) {
+	const isValidPsw = await compare(enteredPassword, hashedPassword);
+	return isValidPsw;
+}
+
+export async function postUserData(enteredSignupData: UserData) {
+	try {
+		const response = await fetch("/api/auth/signup", {
+			method: "POST",
+			body: JSON.stringify(enteredSignupData),
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+		console.log("res", response);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem with the fetch operation:", error);
+	}
+}
+
+export async function postExpensesData(enteredExpensesData: ExpensesData) {
+	try {
+		const response = await fetch("/api/budget/expenses", {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify(enteredExpensesData),
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem while passing the expenses data:",
+			error
+		);
+	}
+}
+
+export async function postIncomesData(enteredIncomesData: IncomesData) {
+	try {
+		const response = await fetch("/api/budget/incomes", {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify(enteredIncomesData),
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem while passing the incomes data:", error);
+	}
+}
+
+export async function postSavingsData(enteredSavingsData: SavingsData) {
+	try {
+		const response = await fetch("/api/budget/savings", {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify(enteredSavingsData),
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem while passing the savings data:", error);
+	}
+}
+
+export async function getExpensesData() {
+	console.log("retrieving expenses funciton started");
+	try {
+		const response = await fetch("/api/budget/expenses");
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the expenses data:",
+			error
+		);
+	}
+}
