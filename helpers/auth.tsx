@@ -167,3 +167,36 @@ export async function getIncomeById(id: number) {
 		);
 	}
 }
+
+export async function getSavingsData() {
+	console.log("retrieving savings funciton started");
+	try {
+		const response = await fetch("http://localhost:3000/api/budget/savings");
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem in retrieving the savings data:", error);
+		//throw error;
+	}
+}
+
+export async function getSavingById(id: number) {
+	try {
+		const response = await fetch(
+			`http://localhost:3000/api/budget/savings/${id}`
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the savings data by its id:",
+			error
+		);
+	}
+}

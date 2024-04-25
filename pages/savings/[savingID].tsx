@@ -1,5 +1,49 @@
-const SavingDetailsPage = () => {
-	return <div>savings details page</div>;
+import { getSavingById, getSavingsData } from "@/helpers/auth";
+import { SavingsData } from "@/types";
+import { GetStaticPaths, GetStaticProps } from "next";
+
+const SavingDetailsPage = ({
+	savingData,
+}: {
+	savingData: { savingsData: SavingsData };
+}) => {
+	const selectedSaving = savingData.savingsData;
+	console.log("INC", selectedSaving);
+	return (
+		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
+			<h1 className="font-serif">
+				Saving : <strong>{selectedSaving.Saving}</strong>
+			</h1>
+			<p className="font-serif">
+				This Income is from <strong>{selectedSaving.Month} </strong> in
+				<strong>{selectedSaving.Year}</strong>
+			</p>
+		</div>
+	);
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const allSavings = await getSavingsData();
+
+	const paths = allSavings.savingsData.map((saving: SavingsData) => ({
+		params: { savingID: saving.id?.toString() },
+	}));
+
+	return {
+		paths,
+		fallback: false,
+	};
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }: any) => {
+	const savingID = params.savingID;
+	const savingData = await getSavingById(parseInt(String(savingID)));
+
+	return {
+		props: {
+			savingData,
+		},
+	};
 };
 
 export default SavingDetailsPage;

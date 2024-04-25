@@ -34,6 +34,7 @@ export interface IncomesData {
 }
 
 export interface SavingsData {
+	id?: number;
 	Category: string;
 	Saving: string;
 	Import: number;
