@@ -24,6 +24,7 @@ export interface ExpensesData {
 }
 
 export interface IncomesData {
+	id?: number;
 	Category: string;
 	Income: string;
 	Import: number;

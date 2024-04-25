@@ -118,10 +118,42 @@ export async function getExpensesData() {
 	}
 }
 
+export async function getIncomesData() {
+	console.log("retrieving incomes funciton started");
+	try {
+		const response = await fetch("http://localhost:3000/api/budget/incomes");
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem in retrieving the incomes data:", error);
+		//throw error;
+	}
+}
 export async function getExpenseById(id: number) {
 	try {
 		const response = await fetch(
 			`http://localhost:3000/api/budget/expenses/${id}`
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the expenses data by its id:",
+			error
+		);
+	}
+}
+
+export async function getIncomeById(id: number) {
+	try {
+		const response = await fetch(
+			`http://localhost:3000/api/budget/incomes/${id}`
 		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
