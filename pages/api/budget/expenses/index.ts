@@ -33,9 +33,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 	} else if (req.method === "GET") {
 		try {
 			const allExpenses = await prisma.expenses.findMany();
-			console.log("all expenses", allExpenses);
 			if (allExpenses) {
-				res.status(201).json({
+				return res.status(200).json({
 					message: "all expenses data retrieved correctly",
 					expensesData: allExpenses,
 				});

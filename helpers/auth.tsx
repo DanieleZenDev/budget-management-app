@@ -103,7 +103,7 @@ export async function postSavingsData(enteredSavingsData: SavingsData) {
 export async function getExpensesData() {
 	console.log("retrieving expenses funciton started");
 	try {
-		const response = await fetch("/api/budget/expenses");
+		const response = await fetch("http://localhost:3000/api/budget/expenses");
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -112,6 +112,25 @@ export async function getExpensesData() {
 	} catch (error) {
 		console.error(
 			"There was a problem in retrieving the expenses data:",
+			error
+		);
+		//throw error;
+	}
+}
+
+export async function getExpenseById(id: number) {
+	try {
+		const response = await fetch(
+			`http://localhost:3000/api/budget/expenses/${id}`
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the expenses data by its id:",
 			error
 		);
 	}

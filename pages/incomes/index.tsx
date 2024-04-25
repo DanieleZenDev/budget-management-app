@@ -7,6 +7,7 @@ const IncomesPage = () => {
 		"Crediti",
 		"Lavori occasionali",
 		"Prestiti",
+		"Rimborsi",
 	];
 	return (
 		<div>

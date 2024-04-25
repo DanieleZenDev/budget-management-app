@@ -82,7 +82,7 @@ const BudgetForm = ({
 	};
 
 	return (
-		<div className="m-12 w-95 max-w-25rem rounded-lg bg-purple-900 shadow-md p-4 text-center w-96">
+		<div className="m-12 h-100 max-w-25rem rounded-lg bg-purple-900 shadow-md p-4 text-center w-96">
 			<h1 className="text-center text-white">{formTitle}</h1>
 			<form onSubmit={submitBudgetData}>
 				<div className="mb-[0.5rem]">

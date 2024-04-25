@@ -14,6 +14,7 @@ export interface CustomUser {
 }
 
 export interface ExpensesData {
+	id?: number;
 	Category: string;
 	Expense: string;
 	Import: number;
