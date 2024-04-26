@@ -7,7 +7,9 @@ const MainNavigation = () => {
 		<header>
 			<nav>
 				<ul className={`flex justify-between p-12`}>
-					<li>Budget data analysis</li>
+					<li>
+						<Link href="/budget-analysis">Budget analysis</Link>
+					</li>
 					<li>
 						<Link href="/">Home page</Link>
 					</li>

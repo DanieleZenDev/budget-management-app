@@ -32,7 +32,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 		}
 	} else if (req.method === "GET") {
 		try {
-			const allIncomes = await prisma.incomes.findMany();
+			const allIncomes = await prisma.incomes.findMany({
+				orderBy: {
+					id: "desc",
+				},
+			});
 			console.log("all incomes", allIncomes);
 			if (allIncomes) {
 				res.status(201).json({

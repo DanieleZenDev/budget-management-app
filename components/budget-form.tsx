@@ -42,7 +42,7 @@ const BudgetForm = ({
 	if (selectedincomesById) {
 		console.log("seibi", selectedincomesById);
 		categoryValue = selectedincomesById.Category;
-		budgetValue = selectedincomesById.Import;
+		budgetValue = selectedincomesById.Income;
 		importValue = selectedincomesById.Import;
 		userValue = selectedincomesById.User;
 	}
@@ -80,7 +80,7 @@ const BudgetForm = ({
 		event.preventDefault();
 
 		const budgetCategoryEnteredValue = budgetCategoryRef.current?.value || "";
-		const budgetOperationTypeEnteredValue =
+		let budgetOperationTypeEnteredValue =
 			budgetOperationTypeRef.current?.value || "";
 		const budgetImportRefEnteredValue = budgetImportRef.current?.value || "";
 		const userEnteredValue = userInputRef.current?.value || "";
@@ -104,7 +104,9 @@ const BudgetForm = ({
 			console.log("budget data to pass", budgetDataToPass);
 			postExpensesData(budgetDataToPass);
 			if (formRef.current) {
-				formRef.current.reset();
+				formRef.current.querySelectorAll("input").forEach((input) => {
+					input.value = "";
+				});
 			}
 		} else if (fullUrl === `/expenses/${dynamicId}`) {
 			budgetDataToPass = {
@@ -118,7 +120,9 @@ const BudgetForm = ({
 			console.log("budget data to pass", budgetDataToPass);
 			updateExpenseById(budgetDataToPass, parseInt(String(dynamicId)));
 			if (formRef.current) {
-				formRef.current.reset();
+				formRef.current.querySelectorAll("input").forEach((input) => {
+					input.value = "";
+				});
 			}
 		} else if (fullUrl === "/incomes") {
 			budgetDataToPass = {
@@ -132,7 +136,9 @@ const BudgetForm = ({
 			console.log("budget data to pass", budgetDataToPass);
 			postIncomesData(budgetDataToPass);
 			if (formRef.current) {
-				formRef.current.reset();
+				formRef.current.querySelectorAll("input").forEach((input) => {
+					input.value = "";
+				});
 			}
 		} else if (fullUrl === `/incomes/${dynamicId}`) {
 			budgetDataToPass = {
@@ -146,7 +152,9 @@ const BudgetForm = ({
 			console.log("budget data to pass", budgetDataToPass);
 			updateIncomeById(budgetDataToPass, parseInt(String(dynamicId)));
 			if (formRef.current) {
-				formRef.current.reset();
+				formRef.current.querySelectorAll("input").forEach((input) => {
+					input.value = "";
+				});
 			}
 		} else if (fullUrl === "/savings") {
 			budgetDataToPass = {
@@ -160,7 +168,9 @@ const BudgetForm = ({
 			console.log("budget data to pass", budgetDataToPass);
 			postSavingsData(budgetDataToPass);
 			if (formRef.current) {
-				formRef.current.reset();
+				formRef.current.querySelectorAll("input").forEach((input) => {
+					input.value = "";
+				});
 			}
 		} else if (fullUrl === `/savings/${dynamicId}`) {
 			budgetDataToPass = {
@@ -174,7 +184,9 @@ const BudgetForm = ({
 			console.log("budget data to pass", budgetDataToPass);
 			updateSavingById(budgetDataToPass, parseInt(String(dynamicId)));
 			if (formRef.current) {
-				formRef.current.reset();
+				formRef.current.querySelectorAll("input").forEach((input) => {
+					input.value = "";
+				});
 			}
 		}
 	};
@@ -190,7 +202,7 @@ const BudgetForm = ({
 					<select
 						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
 						name={category}
-						value={categoryValue ?? ""}
+						defaultValue={categoryValue ?? ""}
 						ref={budgetCategoryRef}
 					>
 						{categoryList.map((scategory, idx) => (
@@ -209,7 +221,7 @@ const BudgetForm = ({
 						type="text"
 						id={operationType}
 						ref={budgetOperationTypeRef}
-						value={budgetValue ?? ""}
+						defaultValue={budgetValue ?? ""}
 						required
 						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
 					/>
@@ -225,7 +237,7 @@ const BudgetForm = ({
 						type="number"
 						id={importAmount}
 						required
-						value={importValue ?? ""}
+						defaultValue={importValue ?? ""}
 						ref={budgetImportRef}
 						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
 					/>
@@ -238,7 +250,7 @@ const BudgetForm = ({
 						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
 						name="user"
 						ref={userInputRef}
-						value={userValue ?? ""}
+						defaultValue={userValue ?? ""}
 					>
 						{users.map((user, idx) => (
 							<option key={idx}>{user}</option>

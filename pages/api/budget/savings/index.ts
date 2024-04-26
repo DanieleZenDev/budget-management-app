@@ -26,7 +26,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 			});
 		} else if (req.method === "GET") {
 			try {
-				const allSavings = await prisma.savings.findMany();
+				const allSavings = await prisma.savings.findMany({
+					orderBy: {
+						id: "desc",
+					},
+				});
 				console.log("all incomes", allSavings);
 				if (allSavings) {
 					res.status(201).json({
