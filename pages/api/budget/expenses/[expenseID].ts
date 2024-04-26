@@ -37,5 +37,33 @@ export default async function handler(
 			console.error("Error fetching expense:", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
+	} else if (req.method === "PUT") {
+		try {
+			const { Category, Expense, Import, Month, Year, User } = req.body;
+			const updatedExpense = await prisma.expenses.update({
+				where: {
+					id: parseInt(expenseID),
+				},
+				data: {
+					Expense,
+					Import,
+					Category,
+					Month,
+					Year,
+					User,
+				},
+			});
+			if (updatedExpense) {
+				res.status(200).json({
+					message: "Expense updated successfully",
+					expensesData: updatedExpense,
+				});
+			} else {
+				res.status(404).json({ message: "Expense not found" });
+			}
+		} catch (error) {
+			console.error("Error updating expense:", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
 	}
 }

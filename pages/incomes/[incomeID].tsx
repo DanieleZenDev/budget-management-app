@@ -1,13 +1,23 @@
+import BudgetForm from "@/components/budget-form";
 import { getIncomeById, getIncomesData } from "@/helpers/auth";
 import { IncomesData } from "@/types";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useState } from "react";
 
 const IncomeDetailsPage = ({
 	incomeData,
 }: {
 	incomeData: { incomesData: IncomesData };
 }) => {
+	const [showUpdateForm, setShowUpdateForm] = useState(false);
 	const selectedIncome = incomeData.incomesData;
+	const incomesCategory = [
+		"Stipendio",
+		"Crediti",
+		"Lavori occasionali",
+		"Prestiti",
+		"Rimborsi",
+	];
 	console.log("INC", selectedIncome);
 	return (
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
@@ -18,6 +28,21 @@ const IncomeDetailsPage = ({
 				This Income is from <strong>{selectedIncome.Month} </strong> in
 				<strong>{selectedIncome.Year}</strong>
 			</p>
+			<button onClick={() => setShowUpdateForm(!showUpdateForm)}>
+				Update this Income
+			</button>
+			{showUpdateForm && (
+				<BudgetForm
+					categoryList={incomesCategory}
+					category="incomes"
+					operationType="income"
+					importAmount="incomeImport"
+					formTitle="Incomes form"
+					dataEntryType="Update"
+					dynamicId={selectedIncome.id}
+					selectedincomesById={selectedIncome}
+				/>
+			)}
 		</div>
 	);
 };

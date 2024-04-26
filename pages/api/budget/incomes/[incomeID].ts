@@ -37,5 +37,33 @@ export default async function handler(
 			console.error("Error fetching incomes:", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
+	} else if (req.method === "PUT") {
+		try {
+			const { Category, Income, Import, Month, Year, User } = req.body;
+			const updatedIncome = await prisma.incomes.update({
+				where: {
+					id: parseInt(incomeID),
+				},
+				data: {
+					Income,
+					Import,
+					Category,
+					Month,
+					Year,
+					User,
+				},
+			});
+			if (updatedIncome) {
+				res.status(200).json({
+					message: "Income updated successfully",
+					incomesData: updatedIncome,
+				});
+			} else {
+				res.status(404).json({ message: "Income not found" });
+			}
+		} catch (error) {
+			console.error("Error updating income:", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
 	}
 }

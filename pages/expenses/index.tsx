@@ -57,16 +57,19 @@ const ExpensesPage = (props: PageProps) => {
 					operationType="expense"
 					importAmount="expenseImport"
 					formTitle="Expenses form"
+					dataEntryType="Post"
 				/>
 				<div className="flex flex-wrap gap-4">
 					{expensesData.slice(0, visibleExpenses).map((expense, index) => (
-						<Link key={index} href={`/expenses/${expense.id}`}>
-							<BudgetDataPanel
-								budgetCategory={expense.Category}
-								user={expense.User}
-								budgetImport={expense.Import}
-							/>
-						</Link>
+						<div>
+							<Link key={index} href={`/expenses/${expense.id}`}>
+								<BudgetDataPanel
+									budgetCategory={expense.Category}
+									user={expense.User}
+									budgetImport={expense.Import}
+								/>
+							</Link>
+						</div>
 					))}
 					<div className="flex flex-col gap-1">
 						{expensesData.length > visibleExpenses && (

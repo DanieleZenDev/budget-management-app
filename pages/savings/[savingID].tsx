@@ -1,14 +1,24 @@
+import BudgetForm from "@/components/budget-form";
 import { getSavingById, getSavingsData } from "@/helpers/auth";
 import { SavingsData } from "@/types";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useState } from "react";
 
 const SavingDetailsPage = ({
 	savingData,
 }: {
 	savingData: { savingsData: SavingsData };
 }) => {
+	const [showUpdateForm, setShowUpdateForm] = useState(false);
 	const selectedSaving = savingData.savingsData;
 	console.log("INC", selectedSaving);
+	const savingsCategory = [
+		"matrimonio",
+		"auto",
+		"viaggi",
+		"emergente",
+		"salute",
+	];
 	return (
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
 			<h1 className="font-serif">
@@ -18,6 +28,21 @@ const SavingDetailsPage = ({
 				This Income is from <strong>{selectedSaving.Month} </strong> in
 				<strong>{selectedSaving.Year}</strong>
 			</p>
+			<button onClick={() => setShowUpdateForm(!showUpdateForm)}>
+				Update this Saving
+			</button>
+			{showUpdateForm && (
+				<BudgetForm
+					categoryList={savingsCategory}
+					category="savings"
+					operationType="saving"
+					importAmount="savingImport"
+					formTitle="Savings form"
+					dataEntryType="Update"
+					dynamicId={selectedSaving.id}
+					selectedSavingsById={selectedSaving}
+				/>
+			)}
 		</div>
 	);
 };

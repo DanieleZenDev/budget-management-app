@@ -44,11 +44,16 @@ export interface SavingsData {
 }
 
 export interface BudgetFormData {
+	dataEntryType: string;
 	categoryList: string[];
 	category: string;
 	operationType: string;
 	importAmount: string;
 	formTitle: string;
+	dynamicId?: number;
+	selectedExpenseById?: ExpensesData;
+	selectedincomesById?: IncomesData;
+	selectedSavingsById?: SavingsData;
 }
 
 export interface BudgetPanelData {

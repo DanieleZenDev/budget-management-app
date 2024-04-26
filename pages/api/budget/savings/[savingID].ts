@@ -37,5 +37,33 @@ export default async function handler(
 			console.error("Error fetching savings:", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
+	} else if (req.method === "PUT") {
+		try {
+			const { Category, Saving, Import, Month, Year, User } = req.body;
+			const updatedSaving = await prisma.savings.update({
+				where: {
+					id: parseInt(savingID),
+				},
+				data: {
+					Saving,
+					Import,
+					Category,
+					Month,
+					Year,
+					User,
+				},
+			});
+			if (updatedSaving) {
+				res.status(200).json({
+					message: "Saving updated successfully",
+					savingsData: updatedSaving,
+				});
+			} else {
+				res.status(404).json({ message: "Saving not found" });
+			}
+		} catch (error) {
+			console.error("Error updating saving:", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
 	}
 }

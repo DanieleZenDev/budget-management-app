@@ -28,6 +28,7 @@ const SavingsPage = (props: PageProps) => {
 					operationType="saving"
 					importAmount="savingImport"
 					formTitle="Savings form"
+					dataEntryType="Post"
 				/>
 				<div className="flex flex-wrap gap-4">
 					{savingsData.map((saving, index) => (

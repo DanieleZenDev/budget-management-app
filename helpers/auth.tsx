@@ -200,3 +200,78 @@ export async function getSavingById(id: number) {
 		);
 	}
 }
+
+export async function updateExpenseById(
+	enteredExpensesData: ExpensesData,
+	id: number
+) {
+	try {
+		const response = await fetch(`/api/budget/expenses/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify(enteredExpensesData),
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem while updating the expenses data:",
+			error
+		);
+	}
+}
+
+export async function updateIncomeById(
+	enteredIncomesData: IncomesData,
+	id: number
+) {
+	try {
+		const response = await fetch(`/api/budget/incomes/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify(enteredIncomesData),
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem while updating the incomes data:",
+			error
+		);
+	}
+}
+
+export async function updateSavingById(
+	enteredSavingsData: SavingsData,
+	id: number
+) {
+	try {
+		const response = await fetch(`/api/budget/savings/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify(enteredSavingsData),
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem while updating the savings data:",
+			error
+		);
+	}
+}

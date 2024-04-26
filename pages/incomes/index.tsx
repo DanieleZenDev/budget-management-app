@@ -43,6 +43,7 @@ const IncomesPage = (props: PageProps) => {
 					operationType="income"
 					importAmount="incomeImport"
 					formTitle="Incomes form"
+					dataEntryType="Post"
 				/>
 				<div className="flex flex-wrap gap-4">
 					{incomesData.slice(0, visibleIncomes).map((income, index) => (
