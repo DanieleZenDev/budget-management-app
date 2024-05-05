@@ -1,7 +1,12 @@
 import BudgetForm from "@/components/budget-form";
-import { getIncomeById, getIncomesData } from "@/helpers/auth";
+import {
+	deleteIncomeById,
+	getIncomeById,
+	getIncomesData,
+} from "@/helpers/auth";
 import { IncomesData } from "@/types";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const IncomeDetailsPage = ({
@@ -19,6 +24,15 @@ const IncomeDetailsPage = ({
 		"Rimborsi",
 	];
 	console.log("INC", selectedIncome);
+	const router = useRouter();
+	const deleteIncomeByIdFunction = async () => {
+		try {
+			await deleteIncomeById(parseInt(String(selectedIncome.id)));
+			router.push("/incomes");
+		} catch (error) {
+			console.error("Error deleting income:", error);
+		}
+	};
 	return (
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
 			<h1 className="font-serif">
@@ -31,6 +45,7 @@ const IncomeDetailsPage = ({
 			<button onClick={() => setShowUpdateForm(!showUpdateForm)}>
 				Update this Income
 			</button>
+			<button onClick={deleteIncomeByIdFunction}>Delete this income</button>
 			{showUpdateForm && (
 				<BudgetForm
 					categoryList={incomesCategory}

@@ -1,7 +1,12 @@
 import BudgetForm from "@/components/budget-form";
-import { getSavingById, getSavingsData } from "@/helpers/auth";
+import {
+	deleteSavingById,
+	getSavingById,
+	getSavingsData,
+} from "@/helpers/auth";
 import { SavingsData } from "@/types";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const SavingDetailsPage = ({
@@ -19,6 +24,15 @@ const SavingDetailsPage = ({
 		"emergente",
 		"salute",
 	];
+	const router = useRouter();
+	const deleteSavingByIdFunction = async () => {
+		try {
+			await deleteSavingById(parseInt(String(selectedSaving.id)));
+			router.push("/savings");
+		} catch (error) {
+			console.error("Error deleting saving:", error);
+		}
+	};
 	return (
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
 			<h1 className="font-serif">
@@ -31,6 +45,7 @@ const SavingDetailsPage = ({
 			<button onClick={() => setShowUpdateForm(!showUpdateForm)}>
 				Update this Saving
 			</button>
+			<button onClick={deleteSavingByIdFunction}>Delete this saving</button>
 			{showUpdateForm && (
 				<BudgetForm
 					categoryList={savingsCategory}

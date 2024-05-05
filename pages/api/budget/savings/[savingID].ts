@@ -65,5 +65,23 @@ export default async function handler(
 			console.error("Error updating saving:", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
+	} else if (req.method === "DELETE") {
+		try {
+			const savingToDelete = await prisma.savings.delete({
+				where: {
+					id: parseInt(savingID),
+				},
+			});
+			if (savingToDelete) {
+				return res.status(200).json({
+					message: "Saving deleted successfully",
+				});
+			} else {
+				return res.status(404).json({ message: "Saving not found" });
+			}
+		} catch (error) {
+			console.error("Error deleting saving:", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
 	}
 }

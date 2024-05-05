@@ -1,5 +1,7 @@
+import BudgetGraphsPage from "@/components/budgetGraphs";
+
 const BudgetAnalysisPage = () => {
-	return <div>Budget Analysis page</div>;
+	return <BudgetGraphsPage />;
 };
 
 export default BudgetAnalysisPage;

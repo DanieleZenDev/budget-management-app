@@ -65,5 +65,23 @@ export default async function handler(
 			console.error("Error updating income:", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
+	} else if (req.method === "DELETE") {
+		try {
+			const incomeToDelete = await prisma.incomes.delete({
+				where: {
+					id: parseInt(incomeID),
+				},
+			});
+			if (incomeToDelete) {
+				return res.status(200).json({
+					message: "Income deleted successfully",
+				});
+			} else {
+				return res.status(404).json({ message: "Income not found" });
+			}
+		} catch (error) {
+			console.error("Error deleting income:", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
 	}
 }

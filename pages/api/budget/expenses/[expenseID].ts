@@ -65,5 +65,23 @@ export default async function handler(
 			console.error("Error updating expense:", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
+	} else if (req.method === "DELETE") {
+		try {
+			const expenseToDelete = await prisma.expenses.delete({
+				where: {
+					id: parseInt(expenseID),
+				},
+			});
+			if (expenseToDelete) {
+				return res.status(200).json({
+					message: "Expense deleted successfully",
+				});
+			} else {
+				return res.status(404).json({ message: "Expense not found" });
+			}
+		} catch (error) {
+			console.error("Error deleting expense:", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
 	}
 }

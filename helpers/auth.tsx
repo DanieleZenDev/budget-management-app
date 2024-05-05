@@ -275,3 +275,60 @@ export async function updateSavingById(
 		);
 	}
 }
+
+export async function deleteExpenseById(id: number) {
+	try {
+		const response = await fetch(`/api/budget/expenses/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem while deleting the expense data:",
+			error
+		);
+	}
+}
+
+export async function deleteIncomeById(id: number) {
+	try {
+		const response = await fetch(`/api/budget/incomes/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem while deleting the income data:", error);
+	}
+}
+
+export async function deleteSavingById(id: number) {
+	try {
+		const response = await fetch(`/api/budget/savings/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem while deleting the saving data:", error);
+	}
+}

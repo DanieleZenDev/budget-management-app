@@ -1,7 +1,12 @@
 import BudgetForm from "@/components/budget-form";
-import { getExpenseById, getExpensesData } from "@/helpers/auth";
+import {
+	deleteExpenseById,
+	getExpenseById,
+	getExpensesData,
+} from "@/helpers/auth";
 import { ExpensesData } from "@/types";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const ExpenseDetailsPage = ({
@@ -10,7 +15,9 @@ const ExpenseDetailsPage = ({
 	expenseData: { expensesData: ExpensesData };
 }) => {
 	const [showUpdateForm, setShowUpdateForm] = useState(false);
+	const router = useRouter();
 	const selectedExpense = expenseData.expensesData;
+
 	console.log("exdp", selectedExpense);
 	const expensesCategory = [
 		"Affitto",
@@ -33,6 +40,14 @@ const ExpenseDetailsPage = ({
 		"sport",
 		"svago",
 	];
+	const deleteExpenseByIdFunction = async () => {
+		try {
+			await deleteExpenseById(parseInt(String(selectedExpense.id)));
+			router.push("/expenses");
+		} catch (error) {
+			console.error("Error deleting expense:", error);
+		}
+	};
 	return (
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
 			<h1 className="font-serif">
@@ -46,6 +61,7 @@ const ExpenseDetailsPage = ({
 			<button onClick={() => setShowUpdateForm(!showUpdateForm)}>
 				Update this expense
 			</button>
+			<button onClick={deleteExpenseByIdFunction}>Delete this expense</button>
 			{showUpdateForm && (
 				<BudgetForm
 					categoryList={expensesCategory}

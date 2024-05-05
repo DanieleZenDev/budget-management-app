@@ -33,6 +33,7 @@ const IncomesPage = (props: PageProps) => {
 		"Lavori occasionali",
 		"Prestiti",
 		"Rimborsi",
+		"Regali",
 	];
 	return (
 		<div>
