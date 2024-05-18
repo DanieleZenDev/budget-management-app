@@ -1,7 +1,7 @@
-// import Plot from "react-plotly.js";
 import { ExpensesData, IncomesData, SavingsData } from "@/types";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+
 type BudgetAnalysisPageProps = {
 	expenses: {
 		expensesData: ExpensesData[];
@@ -16,6 +16,21 @@ type BudgetAnalysisPageProps = {
 	budgetForSelectedYear: number;
 };
 
+type BudgetData = ExpensesData | IncomesData | SavingsData;
+
+const filterDataByMonthYear = (
+	data: BudgetData[],
+	month: string,
+	year: number
+): BudgetData[] =>
+	data.filter((item) => item.Month === month && item.Year === year);
+
+const calculateTotal = (data: { Import: number }[]): number =>
+	data.reduce(
+		(accumulator, currentValue) => accumulator + currentValue.Import,
+		0
+	);
+
 const BudgetGraphsPage = ({
 	expenses,
 	incomes,
@@ -23,91 +38,53 @@ const BudgetGraphsPage = ({
 	budgetForSelectedMonth,
 	budgetForSelectedYear,
 }: BudgetAnalysisPageProps) => {
-	const allExpenses = expenses.expensesData;
-	const allIncomes = incomes.incomesData;
-	const allSavings = savings.savingsData;
-
-	const initialReduceValue = 0;
-	const currentExpenses = allExpenses.filter(
-		(expense) =>
-			expense.Month === budgetForSelectedMonth &&
-			expense.Year === budgetForSelectedYear
+	const currentExpenses = filterDataByMonthYear(
+		expenses.expensesData,
+		budgetForSelectedMonth,
+		budgetForSelectedYear
 	);
+	const currentIncomes = filterDataByMonthYear(
+		incomes.incomesData,
+		budgetForSelectedMonth,
+		budgetForSelectedYear
+	);
+	const currentSavings = filterDataByMonthYear(
+		savings.savingsData,
+		budgetForSelectedMonth,
+		budgetForSelectedYear
+	);
+
 	const expensesCategories = currentExpenses.map((expense) => expense.Category);
 	const expensesImports = currentExpenses.map((expense) => expense.Import);
-
-	const currentIncomes = allIncomes.filter(
-		(income) =>
-			income.Month === budgetForSelectedMonth &&
-			income.Year === budgetForSelectedYear
-	);
 	const incomesCategories = currentIncomes.map((income) => income.Category);
 	const incomesImports = currentIncomes.map((income) => income.Import);
-
-	const currentSavings = allSavings.filter(
-		(saving) =>
-			saving.Month === budgetForSelectedMonth &&
-			saving.Year === budgetForSelectedYear
-	);
 	const savingsCategories = currentSavings.map((saving) => saving.Category);
 	const savingsImports = currentSavings.map((saving) => saving.Import);
 
-	const currentExpensesForGiulia = currentExpenses.filter(
-		(expense) => expense.User === "Giulia"
+	const giuliaExpenses = calculateTotal(
+		currentExpenses.filter((expense) => expense.User === "Giulia")
 	);
-	const currentExpensesForDaniele = currentExpenses.filter(
-		(expense) => expense.User === "Daniele"
+	const danieleExpenses = calculateTotal(
+		currentExpenses.filter((expense) => expense.User === "Daniele")
 	);
-	const totalExpenses = expensesImports.reduce(
-		(accumulator, currentValue) => accumulator + currentValue,
-		initialReduceValue
-	);
-	const giuliaExpenses = currentExpensesForGiulia.reduce(
-		(accumulator, currentValue) => accumulator + currentValue.Import,
-		initialReduceValue
-	);
-	const danieleExpenses = currentExpensesForDaniele.reduce(
-		(accumulator, currentValue) => accumulator + currentValue.Import,
-		initialReduceValue
-	);
+	const totalExpenses = calculateTotal(currentExpenses);
 
-	const currentIncomesForDaniele = currentIncomes.filter(
-		(income) => income.User === "Daniele"
+	const giuliaIncomes = calculateTotal(
+		currentIncomes.filter((income) => income.User === "Giulia")
 	);
-	const currentIncomesForGiulia = currentIncomes.filter(
-		(income) => income.User === "Giulia"
+	const danieleIncomes = calculateTotal(
+		currentIncomes.filter((income) => income.User === "Daniele")
 	);
-	const danieleIncomes = currentIncomesForDaniele.reduce(
-		(accumulator, currentValue) => accumulator + currentValue.Import,
-		initialReduceValue
-	);
-	const giuliaIncomes = currentIncomesForGiulia.reduce(
-		(accumulator, currentValue) => accumulator + currentValue.Import,
-		initialReduceValue
-	);
-	const totalIncomes = incomesImports.reduce(
-		(accumulator, currentValue) => accumulator + currentValue,
-		initialReduceValue
-	);
+	const totalIncomes = calculateTotal(currentIncomes);
 
-	const currentSavingsForDaniele = currentSavings.filter(
-		(saving) => saving.User === "Daniele"
+	const giuliaSavings = calculateTotal(
+		currentSavings.filter((saving) => saving.User === "Giulia")
 	);
-	const currentSavingsForGiulia = currentSavings.filter(
-		(saving) => saving.User === "Giulia"
+	const danieleSavings = calculateTotal(
+		currentSavings.filter((saving) => saving.User === "Daniele")
 	);
-	const danieleSavings = currentSavingsForDaniele.reduce(
-		(accumulator, currentValue) => accumulator + currentValue.Import,
-		initialReduceValue
-	);
-	const giuliaSavings = currentSavingsForGiulia.reduce(
-		(accumulator, currentValue) => accumulator + currentValue.Import,
-		initialReduceValue
-	);
-	const totalSavings = savingsImports.reduce(
-		(accumulator, currentValue) => accumulator + currentValue,
-		initialReduceValue
-	);
+	const totalSavings = calculateTotal(currentSavings);
+
 	return (
 		<div className="flex flex-wrap w-full bg-grey">
 			<Plot
@@ -122,17 +99,16 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Spese per il mese {budgetForSelectedMonth}, fatte da Daniele :
+					Spese per il mese {budgetForSelectedMonth}, fatte da Daniele:{" "}
 					{danieleExpenses}€
 				</h2>
 				<h2>
-					Spese per il mese {budgetForSelectedMonth}, fatte da Giulia :
+					Spese per il mese {budgetForSelectedMonth}, fatte da Giulia:{" "}
 					{giuliaExpenses}€
 				</h2>
 				<h2>
 					Spese totali per il mese {budgetForSelectedMonth}, fatte da Giulia e
-					Daniele:
-					{totalExpenses}€
+					Daniele: {totalExpenses}€
 				</h2>
 			</div>
 			<Plot
@@ -147,17 +123,16 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Entrate per il mese {budgetForSelectedMonth}, di Daniele :
+					Entrate per il mese {budgetForSelectedMonth}, di Daniele:{" "}
 					{danieleIncomes}€
 				</h2>
 				<h2>
-					Entrate per il mese {budgetForSelectedMonth}, di Giulia :
+					Entrate per il mese {budgetForSelectedMonth}, di Giulia:{" "}
 					{giuliaIncomes}€
 				</h2>
 				<h2>
 					Entrate totali per il mese {budgetForSelectedMonth}, di Daniele e
-					Giulia
-					{totalIncomes}€
+					Giulia: {totalIncomes}€
 				</h2>
 			</div>
 			<Plot
@@ -172,17 +147,16 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Risparmi per il mese {budgetForSelectedMonth}, fatti da Daniele :
+					Risparmi per il mese {budgetForSelectedMonth}, fatti da Daniele:{" "}
 					{danieleSavings}€
 				</h2>
 				<h2>
-					Risparmi per il mese {budgetForSelectedMonth}, fatti da Giulia :
+					Risparmi per il mese {budgetForSelectedMonth}, fatti da Giulia:{" "}
 					{giuliaSavings}€
 				</h2>
 				<h2>
 					Risparmi totali per il mese {budgetForSelectedMonth}, di Giulia e
-					Daniele:
-					{totalSavings}€
+					Daniele: {totalSavings}€
 				</h2>
 			</div>
 		</div>
