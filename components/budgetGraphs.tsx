@@ -12,31 +12,41 @@ type BudgetAnalysisPageProps = {
 	savings: {
 		savingsData: SavingsData[];
 	};
+	budgetForSelectedMonth: string;
+	budgetForSelectedYear: number;
 };
 
 const BudgetGraphsPage = ({
 	expenses,
 	incomes,
 	savings,
+	budgetForSelectedMonth,
+	budgetForSelectedYear,
 }: BudgetAnalysisPageProps) => {
 	const allExpenses = expenses.expensesData;
 	const allIncomes = incomes.incomesData;
 	const allSavings = savings.savingsData;
 
 	const aprilExpenses = allExpenses.filter(
-		(expense) => expense.Month === "April" && expense.Year === 2024
+		(expense) =>
+			expense.Month === budgetForSelectedMonth &&
+			expense.Year === budgetForSelectedYear
 	);
 	const expensesCategories = aprilExpenses.map((expense) => expense.Category);
 	const expensesImports = aprilExpenses.map((expense) => expense.Import);
 
 	const aprilIncomes = allIncomes.filter(
-		(income) => income.Month === "April" && income.Year === 2024
+		(income) =>
+			income.Month === budgetForSelectedMonth &&
+			income.Year === budgetForSelectedYear
 	);
 	const incomesCategories = aprilIncomes.map((income) => income.Category);
 	const incomesImports = aprilIncomes.map((income) => income.Import);
 
 	const aprilSavings = allSavings.filter(
-		(saving) => saving.Month === "April" && saving.Year === 2024
+		(saving) =>
+			saving.Month === budgetForSelectedMonth &&
+			saving.Year === budgetForSelectedYear
 	);
 	const savingsCategories = aprilSavings.map((saving) => saving.Category);
 	const savingsImports = aprilSavings.map((saving) => saving.Import);

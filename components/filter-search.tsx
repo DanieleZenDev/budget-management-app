@@ -1,6 +1,8 @@
 import { useRef } from "react";
-
-const FilterSearch = () => {
+type FilterSearchProps = {
+	onFilterChange: (month: string, year: number) => void;
+};
+const FilterSearch = ({ onFilterChange }: FilterSearchProps) => {
 	const monthRef = useRef<HTMLSelectElement>(null);
 	const yearRef = useRef<HTMLSelectElement>(null);
 
@@ -30,6 +32,9 @@ const FilterSearch = () => {
 		const chosenMonth = monthRef.current?.value;
 		const chosenYear = yearRef.current?.value;
 		//console.log("chosen month", chosenMonth, "chosen year", chosenYear);
+		if (chosenMonth && chosenYear) {
+			onFilterChange(chosenMonth, parseInt(String(chosenYear)));
+		}
 	};
 	return (
 		<div className="flex justify-center bg-gradient-to-b from-gray-200 to-gray-300 py-8">

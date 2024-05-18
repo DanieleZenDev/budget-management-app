@@ -6,7 +6,7 @@ import {
 	getSavingsData,
 } from "@/helpers/auth";
 import { ExpensesData, IncomesData, SavingsData } from "@/types";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
 type BudgetAnalysisPageProps = {
 	expenses: {
@@ -25,14 +25,25 @@ const BudgetAnalysisPage = ({
 	incomes,
 	savings,
 }: BudgetAnalysisPageProps) => {
+	const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+	const [selectedYear, setSelectedYear] = useState<number | null>(null);
+
+	const handleFilterChange = (month: string, year: number) => {
+		setSelectedMonth(month);
+		setSelectedYear(year);
+	};
 	return (
 		<Fragment>
-			<FilterSearch />
-			<BudgetGraphsPage
-				expenses={expenses}
-				incomes={incomes}
-				savings={savings}
-			/>
+			<FilterSearch onFilterChange={handleFilterChange} />
+			{selectedYear && selectedMonth && (
+				<BudgetGraphsPage
+					expenses={expenses}
+					incomes={incomes}
+					savings={savings}
+					budgetForSelectedMonth={selectedMonth}
+					budgetForSelectedYear={selectedYear}
+				/>
+			)}
 		</Fragment>
 	);
 };
