@@ -21,7 +21,7 @@ const SavingsPage = (props: PageProps) => {
 	];
 	return (
 		<div>
-			<section className="flex justify-center">
+			<section className="flex flex-col justify-center gap-4">
 				<BudgetForm
 					categoryList={savingsCategory}
 					category="savings"

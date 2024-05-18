@@ -192,78 +192,82 @@ const BudgetForm = ({
 	};
 
 	return (
-		<div className="m-12 h-100 max-w-25rem rounded-lg bg-purple-900 shadow-md p-4 text-center w-96">
-			<h1 className="text-center text-white">{formTitle}</h1>
-			<form onSubmit={submitBudgetData} ref={formRef}>
-				<div className="mb-[0.5rem]">
-					<h1 className="inline-block text-white font-bold mb-[0.5rem]">
-						Category
-					</h1>
-					<select
-						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
-						name={category}
-						defaultValue={categoryValue ?? ""}
-						ref={budgetCategoryRef}
-					>
-						{categoryList.map((scategory, idx) => (
-							<option key={idx}>{scategory}</option>
-						))}
-					</select>
-				</div>
-				<div className="mb-[0.5rem]">
-					<label
-						htmlFor={operationType}
-						className="inline-block text-white font-bold mb-[0.5rem]"
-					>
-						{operationType}
-					</label>
-					<input
-						type="text"
-						id={operationType}
-						ref={budgetOperationTypeRef}
-						defaultValue={budgetValue ?? ""}
-						required
-						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
-					/>
-				</div>
-				<div className="mb-[0.5rem]">
-					<label
-						htmlFor={importAmount}
-						className="inline-block text-white font-bold mb-[0.5rem]"
-					>
-						Import
-					</label>
-					<input
-						type="number"
-						id={importAmount}
-						required
-						defaultValue={importValue ?? ""}
-						ref={budgetImportRef}
-						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
-					/>
-				</div>
-				<div className="mb-[0.5rem]">
-					<h1 className="inline-block text-white font-bold mb-[0.5rem]">
-						Users
-					</h1>
-					<select
-						className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
-						name="user"
-						ref={userInputRef}
-						defaultValue={userValue ?? ""}
-					>
-						{users.map((user, idx) => (
-							<option key={idx}>{user}</option>
-						))}
-					</select>
-				</div>
+		<div className="flex justify-center ">
+			<div className="max-w-md w-[500px] bg-white shadow-md rounded-lg overflow-hidden">
+				<h1 className="text-center text-xl font-bold bg-blue-500 text-white py-4">
+					{formTitle}
+				</h1>
+				<form className="px-6 py-4" onSubmit={submitBudgetData} ref={formRef}>
+					<div className="mb-[0.5rem]">
+						<h1 className="block text-gray-700 text-sm font-bold mb-2">
+							Category
+						</h1>
+						<select
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
+							name={category}
+							defaultValue={categoryValue ?? ""}
+							ref={budgetCategoryRef}
+						>
+							{categoryList.map((scategory, idx) => (
+								<option key={idx}>{scategory}</option>
+							))}
+						</select>
+					</div>
+					<div className="mb-[0.5rem]">
+						<label
+							htmlFor={operationType}
+							className="block text-gray-700 text-sm font-bold mb-2"
+						>
+							{operationType}
+						</label>
+						<input
+							type="text"
+							id={operationType}
+							ref={budgetOperationTypeRef}
+							defaultValue={budgetValue ?? ""}
+							required
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
+						/>
+					</div>
+					<div className="mb-[0.5rem]">
+						<label
+							htmlFor={importAmount}
+							className="block text-gray-700 text-sm font-bold mb-2"
+						>
+							Import
+						</label>
+						<input
+							type="number"
+							id={importAmount}
+							required
+							defaultValue={importValue ?? ""}
+							ref={budgetImportRef}
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
+						/>
+					</div>
+					<div className="mb-[0.5rem]">
+						<h1 className="block text-gray-700 text-sm font-bold mb-2">
+							Users
+						</h1>
+						<select
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
+							name="user"
+							ref={userInputRef}
+							defaultValue={userValue ?? ""}
+						>
+							{users.map((user, idx) => (
+								<option key={idx}>{user}</option>
+							))}
+						</select>
+					</div>
 
-				<div className="mt-[1.5rem] flex flex-col items-center">
-					<button className="cursor-pointer font-inherit text-white bg-purple-600 border border-purple-600 rounded-md px-10 py-2 hover:bg-purple-700 hover:border-purple-600 mt-[1.2rem] bg-transparent border-none p-[0.15rem 1.5rem]">
-						{dataEntryType} {operationType}
-					</button>
-				</div>
-			</form>
+					<div className="mt-[1.5rem] flex flex-col items-center">
+						<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+							{dataEntryType} {operationType}
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	);
 };

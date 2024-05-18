@@ -47,10 +47,11 @@ const ExpensesPage = (props: PageProps) => {
 		"vacanze",
 		"sport",
 		"svago",
+		"auto",
 	];
 	return (
 		<div>
-			<section className="flex justify-center">
+			<section className="flex flex-col justify-center gap-4">
 				<BudgetForm
 					categoryList={expensesCategory}
 					category="expenses"
