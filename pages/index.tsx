@@ -1,9 +1,16 @@
 import { Inter } from "next/font/google";
+import Head from "next/head";
+import { Fragment } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 	return (
+		<Fragment>
+			<Head>
+				<title>home page</title>
+				<meta name="description" content="main page of budget management page"/>
+			</Head>
 		<main
 			className={`flex min-h-screen flex-col items-center justify-between p-12 ${inter.className}`}
 		>
@@ -25,5 +32,6 @@ export default function Home() {
 				<p>All savings import for month/year:..</p>
 			</div>
 		</main>
+		</Fragment>
 	);
 }

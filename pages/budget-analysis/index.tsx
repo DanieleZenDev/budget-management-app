@@ -6,6 +6,7 @@ import {
 	getSavingsData,
 } from "@/helpers/auth";
 import { ExpensesData, IncomesData, SavingsData } from "@/types";
+import Head from "next/head";
 import { Fragment, useState } from "react";
 
 type BudgetAnalysisPageProps = {
@@ -34,6 +35,10 @@ const BudgetAnalysisPage = ({
 	};
 	return (
 		<Fragment>
+			<Head>
+				<title>Budget analysis page</title>
+				<meta name="description" content="graphs about expenses, incomes and savings"/>
+			</Head>
 			<FilterSearch onFilterChange={handleFilterChange} />
 			{selectedYear && selectedMonth && (
 				<BudgetGraphsPage

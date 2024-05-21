@@ -6,8 +6,9 @@ import {
 } from "@/helpers/auth";
 import { ExpensesData } from "@/types";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 const ExpenseDetailsPage = ({
 	expenseData,
@@ -49,6 +50,11 @@ const ExpenseDetailsPage = ({
 		}
 	};
 	return (
+		<Fragment>
+			<Head>
+				<title>Selected expense detail</title>
+				<meta name="description" content="further details about my expense"/>
+			</Head>
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
 			<h1 className="font-serif">
 				Expense : <strong>{selectedExpense.Expense}</strong> Import:{" "}
@@ -75,6 +81,8 @@ const ExpenseDetailsPage = ({
 				/>
 			)}
 		</div>
+		</Fragment>
+		
 	);
 };
 

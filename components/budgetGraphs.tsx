@@ -99,11 +99,11 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Spese per il mese {budgetForSelectedMonth}, fatte da Daniele:{" "}
+					Spese per il mese {budgetForSelectedMonth}, fatte da Daniele:
 					{danieleExpenses}€
 				</h2>
 				<h2>
-					Spese per il mese {budgetForSelectedMonth}, fatte da Giulia:{" "}
+					Spese per il mese {budgetForSelectedMonth}, fatte da Giulia:
 					{giuliaExpenses}€
 				</h2>
 				<h2>
@@ -123,11 +123,11 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Entrate per il mese {budgetForSelectedMonth}, di Daniele:{" "}
+					Entrate per il mese {budgetForSelectedMonth}, di Daniele:
 					{danieleIncomes}€
 				</h2>
 				<h2>
-					Entrate per il mese {budgetForSelectedMonth}, di Giulia:{" "}
+					Entrate per il mese {budgetForSelectedMonth}, di Giulia:
 					{giuliaIncomes}€
 				</h2>
 				<h2>
@@ -147,11 +147,11 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Risparmi per il mese {budgetForSelectedMonth}, fatti da Daniele:{" "}
+					Risparmi per il mese {budgetForSelectedMonth}, fatti da Daniele:
 					{danieleSavings}€
 				</h2>
 				<h2>
-					Risparmi per il mese {budgetForSelectedMonth}, fatti da Giulia:{" "}
+					Risparmi per il mese {budgetForSelectedMonth}, fatti da Giulia:
 					{giuliaSavings}€
 				</h2>
 				<h2>

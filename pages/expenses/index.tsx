@@ -2,8 +2,9 @@ import BudgetDataPanel from "@/components/budget-data-panel";
 import BudgetForm from "@/components/budget-form";
 import { getExpensesData } from "@/helpers/auth";
 import { ExpensesData } from "@/types";
+import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 type PageProps = {
 	expenses: {
@@ -50,6 +51,11 @@ const ExpensesPage = (props: PageProps) => {
 		"auto",
 	];
 	return (
+		<Fragment>
+			<Head>
+				<title>All expenses list page</title>
+				<meta name="description" content="a list of all expenses"/>
+			</Head>
 		<div>
 			<section className="flex flex-col justify-center gap-4">
 				<BudgetForm
@@ -83,6 +89,8 @@ const ExpensesPage = (props: PageProps) => {
 				</div>
 			</section>
 		</div>
+		</Fragment>
+		
 	);
 };
 

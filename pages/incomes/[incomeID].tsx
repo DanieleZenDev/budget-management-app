@@ -6,8 +6,9 @@ import {
 } from "@/helpers/auth";
 import { IncomesData } from "@/types";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 const IncomeDetailsPage = ({
 	incomeData,
@@ -34,6 +35,11 @@ const IncomeDetailsPage = ({
 		}
 	};
 	return (
+		<Fragment>
+			<Head>
+				<title>Selected income detail</title>
+				<meta name="description" content="further details about my income"/>
+			</Head>
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
 			<h1 className="font-serif">
 				Income : <strong>{selectedIncome.Income}</strong>
@@ -59,6 +65,8 @@ const IncomeDetailsPage = ({
 				/>
 			)}
 		</div>
+		</Fragment>
+		
 	);
 };
 

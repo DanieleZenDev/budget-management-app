@@ -2,8 +2,9 @@ import BudgetDataPanel from "@/components/budget-data-panel";
 import BudgetForm from "@/components/budget-form";
 import { getIncomesData } from "@/helpers/auth";
 import { IncomesData } from "@/types";
+import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 type PageProps = {
 	incomes: {
 		incomesData: IncomesData[];
@@ -36,6 +37,11 @@ const IncomesPage = (props: PageProps) => {
 		"Regali",
 	];
 	return (
+		<Fragment>
+			<Head>
+				<title>All incomes list page</title>
+				<meta name="description" content="a list of all incomes"/>
+			</Head>
 		<div>
 			<section className="flex flex-col justify-center gap-4">
 				<BudgetForm
@@ -67,6 +73,8 @@ const IncomesPage = (props: PageProps) => {
 				</div>
 			</section>
 		</div>
+		</Fragment>
+		
 	);
 };
 

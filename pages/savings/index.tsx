@@ -2,7 +2,9 @@ import BudgetDataPanel from "@/components/budget-data-panel";
 import BudgetForm from "@/components/budget-form";
 import { getSavingsData } from "@/helpers/auth";
 import { SavingsData } from "@/types";
+import Head from "next/head";
 import Link from "next/link";
+import { Fragment } from "react";
 type PageProps = {
 	savings: {
 		savingsData: SavingsData[];
@@ -20,6 +22,11 @@ const SavingsPage = (props: PageProps) => {
 		"salute",
 	];
 	return (
+		<Fragment>
+			<Head>
+				<title>All savings list page</title>
+				<meta name="description" content="further details about my saving"/>
+			</Head>
 		<div>
 			<section className="flex flex-col justify-center gap-4">
 				<BudgetForm
@@ -43,6 +50,8 @@ const SavingsPage = (props: PageProps) => {
 				</div>
 			</section>
 		</div>
+		</Fragment>
+		
 	);
 };
 
