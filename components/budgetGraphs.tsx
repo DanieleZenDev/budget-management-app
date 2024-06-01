@@ -1,5 +1,7 @@
 import { ExpensesData, IncomesData, SavingsData } from "@/types";
 import dynamic from "next/dynamic";
+import * as XLSX from "xlsx";
+
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 type BudgetAnalysisPageProps = {
@@ -12,8 +14,8 @@ type BudgetAnalysisPageProps = {
 	savings: {
 		savingsData: SavingsData[];
 	};
-	budgetForSelectedMonth: string;
-	budgetForSelectedYear: number;
+	SelectedMonth: string;
+	SelectedYear: number;
 };
 
 type BudgetData = ExpensesData | IncomesData | SavingsData;
@@ -35,23 +37,23 @@ const BudgetGraphsPage = ({
 	expenses,
 	incomes,
 	savings,
-	budgetForSelectedMonth,
-	budgetForSelectedYear,
+	SelectedMonth,
+	SelectedYear,
 }: BudgetAnalysisPageProps) => {
 	const currentExpenses = filterDataByMonthYear(
 		expenses.expensesData,
-		budgetForSelectedMonth,
-		budgetForSelectedYear
+		SelectedMonth,
+		SelectedYear
 	);
 	const currentIncomes = filterDataByMonthYear(
 		incomes.incomesData,
-		budgetForSelectedMonth,
-		budgetForSelectedYear
+		SelectedMonth,
+		SelectedYear
 	);
 	const currentSavings = filterDataByMonthYear(
 		savings.savingsData,
-		budgetForSelectedMonth,
-		budgetForSelectedYear
+		SelectedMonth,
+		SelectedYear
 	);
 
 	const expensesCategories = currentExpenses.map((expense) => expense.Category);
@@ -85,6 +87,17 @@ const BudgetGraphsPage = ({
 	);
 	const totalSavings = calculateTotal(currentSavings);
 
+	const createBudgetTableForMonth = (
+		expensesToPass: BudgetData[],
+		tableSheetName: string,
+		tableName: string
+	) => {
+		const workbook = XLSX.utils.book_new();
+		const worksheet = XLSX.utils?.json_to_sheet(expensesToPass);
+		XLSX.utils.book_append_sheet(workbook, worksheet, `${tableSheetName}`);
+		XLSX.writeFile(workbook, `${tableName}.xlsx`);
+	};
+
 	return (
 		<div className="flex flex-wrap w-full bg-grey">
 			<Plot
@@ -99,17 +112,29 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Spese per il mese {budgetForSelectedMonth}, fatte da Daniele:
+					Spese per il mese {SelectedMonth}, fatte da Daniele:
 					{danieleExpenses}€
 				</h2>
 				<h2>
-					Spese per il mese {budgetForSelectedMonth}, fatte da Giulia:
+					Spese per il mese {SelectedMonth}, fatte da Giulia:
 					{giuliaExpenses}€
 				</h2>
 				<h2>
-					Spese totali per il mese {budgetForSelectedMonth}, fatte da Giulia e
-					Daniele: {totalExpenses}€
+					Spese totali per il mese {SelectedMonth}, fatte da Giulia e Daniele:{" "}
+					{totalExpenses}€
 				</h2>
+				<button
+					type="button"
+					onClick={() =>
+						createBudgetTableForMonth(
+							currentExpenses,
+							"expenses",
+							"expensesForMonth"
+						)
+					}
+				>
+					<strong>Export expenses for month excel</strong>
+				</button>
 			</div>
 			<Plot
 				data={[
@@ -123,17 +148,29 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Entrate per il mese {budgetForSelectedMonth}, di Daniele:
+					Entrate per il mese {SelectedMonth}, di Daniele:
 					{danieleIncomes}€
 				</h2>
 				<h2>
-					Entrate per il mese {budgetForSelectedMonth}, di Giulia:
+					Entrate per il mese {SelectedMonth}, di Giulia:
 					{giuliaIncomes}€
 				</h2>
 				<h2>
-					Entrate totali per il mese {budgetForSelectedMonth}, di Daniele e
-					Giulia: {totalIncomes}€
+					Entrate totali per il mese {SelectedMonth}, di Daniele e Giulia:{" "}
+					{totalIncomes}€
 				</h2>
+				<button
+					type="button"
+					onClick={() =>
+						createBudgetTableForMonth(
+							currentIncomes,
+							"incomes",
+							"incomesForMonth"
+						)
+					}
+				>
+					<strong>Export incomes for month excel</strong>
+				</button>
 			</div>
 			<Plot
 				data={[
@@ -147,17 +184,29 @@ const BudgetGraphsPage = ({
 			/>
 			<div className="flex flex-col gap-1 justify-center">
 				<h2>
-					Risparmi per il mese {budgetForSelectedMonth}, fatti da Daniele:
+					Risparmi per il mese {SelectedMonth}, fatti da Daniele:
 					{danieleSavings}€
 				</h2>
 				<h2>
-					Risparmi per il mese {budgetForSelectedMonth}, fatti da Giulia:
+					Risparmi per il mese {SelectedMonth}, fatti da Giulia:
 					{giuliaSavings}€
 				</h2>
 				<h2>
-					Risparmi totali per il mese {budgetForSelectedMonth}, di Giulia e
-					Daniele: {totalSavings}€
+					Risparmi totali per il mese {SelectedMonth}, di Giulia e Daniele:{" "}
+					{totalSavings}€
 				</h2>
+				<button
+					type="button"
+					onClick={() =>
+						createBudgetTableForMonth(
+							currentSavings,
+							"savings",
+							"savingsForMonth"
+						)
+					}
+				>
+					<strong>Export Savings for month excel</strong>
+				</button>
 			</div>
 		</div>
 	);

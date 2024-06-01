@@ -50,47 +50,47 @@ const ExpensesPage = (props: PageProps) => {
 		"svago",
 		"auto",
 	];
+
 	return (
 		<Fragment>
 			<Head>
 				<title>All expenses list page</title>
-				<meta name="description" content="a list of all expenses"/>
+				<meta name="description" content="a list of all expenses" />
 			</Head>
-		<div>
-			<section className="flex flex-col justify-center gap-4">
-				<BudgetForm
-					categoryList={expensesCategory}
-					category="expenses"
-					operationType="expense"
-					importAmount="expenseImport"
-					formTitle="Expenses form"
-					dataEntryType="Post"
-				/>
-				<div className="flex flex-wrap gap-4">
-					{expensesData.slice(0, visibleExpenses).map((expense, index) => (
-						<div>
-							<Link key={index} href={`/expenses/${expense.id}`}>
-								<BudgetDataPanel
-									budgetCategory={expense.Category}
-									user={expense.User}
-									budgetImport={expense.Import}
-								/>
-							</Link>
+			<div>
+				<section className="flex flex-col justify-center gap-4">
+					<BudgetForm
+						categoryList={expensesCategory}
+						category="expenses"
+						operationType="expense"
+						importAmount="expenseImport"
+						formTitle="Expenses form"
+						dataEntryType="Post"
+					/>
+					<div className="flex flex-wrap gap-4">
+						{expensesData.slice(0, visibleExpenses).map((expense, index) => (
+							<div>
+								<Link key={index} href={`/expenses/${expense.id}`}>
+									<BudgetDataPanel
+										budgetCategory={expense.Category}
+										user={expense.User}
+										budgetImport={expense.Import}
+									/>
+								</Link>
+							</div>
+						))}
+						<div className="flex flex-col gap-1">
+							{expensesData.length > visibleExpenses && (
+								<button onClick={loadMoreExpenses}>Mostra altre spese</button>
+							)}
+							{visibleExpenses > expensesPerPage && (
+								<button onClick={hideExpenses}>Nascondi 10 spese</button>
+							)}
 						</div>
-					))}
-					<div className="flex flex-col gap-1">
-						{expensesData.length > visibleExpenses && (
-							<button onClick={loadMoreExpenses}>Mostra altre spese</button>
-						)}
-						{visibleExpenses > expensesPerPage && (
-							<button onClick={hideExpenses}>Nascondi 10 spese</button>
-						)}
 					</div>
-				</div>
-			</section>
-		</div>
+				</section>
+			</div>
 		</Fragment>
-		
 	);
 };
 

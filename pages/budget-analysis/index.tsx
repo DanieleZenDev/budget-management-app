@@ -37,7 +37,10 @@ const BudgetAnalysisPage = ({
 		<Fragment>
 			<Head>
 				<title>Budget analysis page</title>
-				<meta name="description" content="graphs about expenses, incomes and savings"/>
+				<meta
+					name="description"
+					content="graphs about expenses, incomes and savings"
+				/>
 			</Head>
 			<FilterSearch onFilterChange={handleFilterChange} />
 			{selectedYear && selectedMonth && (
@@ -45,8 +48,8 @@ const BudgetAnalysisPage = ({
 					expenses={expenses}
 					incomes={incomes}
 					savings={savings}
-					budgetForSelectedMonth={selectedMonth}
-					budgetForSelectedYear={selectedYear}
+					SelectedMonth={selectedMonth}
+					SelectedYear={selectedYear}
 				/>
 			)}
 		</Fragment>

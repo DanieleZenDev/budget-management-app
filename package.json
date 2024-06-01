@@ -18,7 +18,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-plotly.js": "^2.6.0",
-    "react-plotlyjs": "^0.4.4"
+    "react-plotlyjs": "^0.4.4",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
