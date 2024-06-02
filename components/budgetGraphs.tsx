@@ -192,7 +192,7 @@ const BudgetGraphsPage = ({
 					{giuliaSavings}€
 				</h2>
 				<h2>
-					Risparmi totali per il mese {SelectedMonth}, di Giulia e Daniele:{" "}
+					Risparmi totali per il mese {SelectedMonth}, di Giulia e Daniele:
 					{totalSavings}€
 				</h2>
 				<button
