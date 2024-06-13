@@ -53,17 +53,7 @@ const BudgetForm = ({
 		importValue = selectedSavingsById.Import;
 		userValue = selectedSavingsById.User;
 	}
-	console.log(
-		"obj INP val",
-		"cv",
-		categoryValue,
-		"bv",
-		budgetValue,
-		"iv",
-		importValue,
-		"usv",
-		userValue
-	);
+	
 	const formRef = useRef<HTMLFormElement>(null);
 	const budgetCategoryRef = useRef<HTMLSelectElement>(null);
 	const budgetOperationTypeRef = useRef<HTMLInputElement>(null);
@@ -85,6 +75,7 @@ const BudgetForm = ({
 		const budgetImportRefEnteredValue = budgetImportRef.current?.value || "";
 		const userEnteredValue = userInputRef.current?.value || "";
 
+		
 		const importValue = budgetImportRefEnteredValue
 			? parseInt(budgetImportRefEnteredValue)
 			: 0;
