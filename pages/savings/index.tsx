@@ -44,6 +44,7 @@ const SavingsPage = (props: PageProps) => {
 								budgetCategory={saving.Category}
 								user={saving.User}
 								budgetImport={saving.Import}
+								budgetOperation={saving.Saving}
 							/>
 						</Link>
 					))}

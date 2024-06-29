@@ -75,6 +75,7 @@ const ExpensesPage = (props: PageProps) => {
 										budgetCategory={expense.Category}
 										user={expense.User}
 										budgetImport={expense.Import}
+										budgetOperation={expense.Expense}
 									/>
 								</Link>
 							</div>

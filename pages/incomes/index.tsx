@@ -59,6 +59,7 @@ const IncomesPage = (props: PageProps) => {
 								budgetCategory={income.Category}
 								user={income.User}
 								budgetImport={income.Import}
+								budgetOperation={income.Income}
 							/>
 						</Link>
 					))}

@@ -60,4 +60,5 @@ export interface BudgetPanelData {
 	budgetCategory: string;
 	user: string;
 	budgetImport: number;
+	budgetOperation:string;
 }
