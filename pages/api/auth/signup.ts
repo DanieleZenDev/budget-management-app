@@ -6,7 +6,7 @@ import { sign } from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 type Data = {
-	message: string;
+	message: string | string[];
 	userdata?: UserData;
 	accessToken?:string;
 };
@@ -14,20 +14,46 @@ type Data = {
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 	if (req.method === "POST") {
 		const { Name, Email, Password } = req.body;
-	
+		console.log('pas l,', Password, Email, Name)
+		// Array to accumulate validation errors
+		const errors: string[] = [];
+
+		// Validation logic
 		if (!Email) {
-			return res.status(422).json({ message: "No email found" });
-		} else if (!Email.includes("@")) {
-			return res.status(422).json({ message: "Email must include a @ symbol" });
-		} else if (!Password) {
-			return res.status(422).json({ message: "No password found" });
-		} else if (!Name){
-			return res.status(422).json({ message: "No name found" });
-		} else if (Password.length < 8) {
-			return res
-				.status(422)
-				.json({ message: "Password should have at least 8 characters" });
+			errors.push("No email found");
 		}
+		if (Email && !Email.includes("@")) {
+			errors.push("Email must include a @ symbol");
+		}
+		if (!Password) {
+			errors.push("No password found");
+		}
+		if (Password && Password.length < 8) {
+			errors.push("Password should have at least 8 characters");
+		}
+		if (!Name) {
+			errors.push("No name found");
+		}
+
+		// If there are any validation errors, return them
+		if (errors.length > 0) {
+			console.log("Validation Errors:", errors);
+			return res.status(422).json({ message: errors });
+		}
+
+		// if (!Email) {
+		// 	return res.status(422).json({ message: "No email found" });
+		// } else if (!Email.includes("@")) {
+		// 	return res.status(422).json({ message: "Email must include a @ symbol" });
+		// } else if (!Password) {
+		// 	return res.status(422).json({ message: "No password found" });
+		// } else if (!Name){
+		// 	return res.status(422).json({ message: "No name found" });
+		// } else if (Password.length < 8) {
+		// 	return res
+		// 		.status(422)
+		// 		.json({ message: "Password should have at least 8 characters" });
+		// }
 
 		const hashedPassword = await hashPassword(Password);
 
@@ -41,6 +67,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
 			const userData = await prisma.user.create({
 				data: {
+					Name:Name,
 					Email: Email,
 					Password: hashedPassword,
 				},

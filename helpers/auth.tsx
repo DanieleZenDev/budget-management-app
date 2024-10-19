@@ -32,13 +32,17 @@ export async function postUserData(enteredSignupData: UserData) {
 		console.log("res", response);
 		if (!response.ok) {
 			const errorData = await response.json(); 
-			console.log('er mes', errorData.message)
-			throw errorData.message; 
+			if (Array.isArray(errorData.message)) {
+				return { error: errorData.message }; 
+			}
+
+			return { error: [errorData.message] };
 		}
 		const data = await response.json();
-		return data;
+		return { data };
 	} catch (error) {
-		console.error("There was a problem with the fetch operation:", error);
+		//return { error }
+		return { error: [error] }; 
 	}
 }
 
@@ -334,3 +338,5 @@ export async function deleteSavingById(id: number) {
 		console.error("There was a problem while deleting the saving data:", error);
 	}
 }
+
+

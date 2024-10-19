@@ -20,6 +20,7 @@ export default NextAuth({
 			credentials: {
 				Email: { label: "Email", type: "text", placeholder: "jsmith" },
 				Password: { label: "Password", type: "password" },
+				Name: { label: "Name", type: "text", placeholder: "Your Name" }
 			},
 			async authorize(credentials): Promise<CustomUser | null> {
 				const existingUser = await prisma.user.findFirst({
@@ -44,6 +45,7 @@ export default NextAuth({
 				return {
 					id: existingUser.id.toString(),
 					email: existingUser.Email,
+					name:  existingUser.Name,
 					access_token: accessToken,
 				};
 			},
@@ -70,7 +72,7 @@ export default NextAuth({
 					token:token
 				}
 			};
-			return session;
+			//return session;
 		}
 	},
 	secret:'your_super_secret_jwt_key',

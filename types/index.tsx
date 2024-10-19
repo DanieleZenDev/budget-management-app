@@ -5,6 +5,7 @@ export interface HashedPassword {
 export interface UserData {
 	Email: string;
 	Password: string;
+	Name:string | null;
 }
 
 export interface CustomUser {
