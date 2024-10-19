@@ -41,7 +41,7 @@ export default NextAuth({
 				if (!isValidPsw) {
 					throw new Error("Could not proceed with login");
 				}
-				const accessToken = sign({ id: existingUser.id, email: existingUser.Email, password:existingUser.Password }, 'your_super_secret_jwt_key', { expiresIn: '1h' });
+				const accessToken = sign({ id: existingUser.id, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '1h' });
 				return {
 					id: existingUser.id.toString(),
 					email: existingUser.Email,
@@ -55,10 +55,13 @@ export default NextAuth({
 		async jwt ({token, user, session}){
 			console.log('JWT Data :', {token, user, session});
 			if(user){
-				return { 
-					...token,
-					id:user.id,
-				}
+				const customUser = user as CustomUser; 
+            
+            	return {
+                	...token,
+                	id: customUser.id,              
+                	accessToken: customUser.access_token
+            	};
 			}
 			return token;
 		},
@@ -69,8 +72,9 @@ export default NextAuth({
 				user:{
 					...session.user,
 					id:token.id,
-					token:token
-				}
+					token:token.access_token
+				},
+				accessToken: token.accessToken,
 			};
 			//return session;
 		}

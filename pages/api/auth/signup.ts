@@ -14,11 +14,9 @@ type Data = {
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 	if (req.method === "POST") {
 		const { Name, Email, Password } = req.body;
-		console.log('pas l,', Password, Email, Name)
-		// Array to accumulate validation errors
+	
 		const errors: string[] = [];
 
-		// Validation logic
 		if (!Email) {
 			errors.push("No email found");
 		}
@@ -41,20 +39,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 			return res.status(422).json({ message: errors });
 		}
 
-		// if (!Email) {
-		// 	return res.status(422).json({ message: "No email found" });
-		// } else if (!Email.includes("@")) {
-		// 	return res.status(422).json({ message: "Email must include a @ symbol" });
-		// } else if (!Password) {
-		// 	return res.status(422).json({ message: "No password found" });
-		// } else if (!Name){
-		// 	return res.status(422).json({ message: "No name found" });
-		// } else if (Password.length < 8) {
-		// 	return res
-		// 		.status(422)
-		// 		.json({ message: "Password should have at least 8 characters" });
-		// }
-
 		const hashedPassword = await hashPassword(Password);
 
 		try {
@@ -72,7 +56,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 					Password: hashedPassword,
 				},
 			});
-			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password }, 'your_super_secret_jwt_key', { expiresIn: '1h' });
+			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password, name:userData.Name }, 'your_super_secret_jwt_key', { expiresIn: '1h' });
 			return res	
 				.status(201)
 				.json({ message: "Created the user", userdata: userData, accessToken});
