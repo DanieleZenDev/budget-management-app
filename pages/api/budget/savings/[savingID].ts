@@ -12,7 +12,7 @@ export default async function handler(
 	res: NextApiResponse<Savings>
 ) {
 	const { savingID }: any = req.query;
-	console.log("INC id", savingID);
+	
 	if (req.method === "GET") {
 		try {
 			if (savingID !== undefined) {

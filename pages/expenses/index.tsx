@@ -13,6 +13,7 @@ type PageProps = {
 };
 
 const ExpensesPage = (props: PageProps) => {
+	
 	const { expensesData } = props.expenses;
 
 	const [visibleExpenses, setVisibleExpenses] = useState(10);
@@ -28,6 +29,7 @@ const ExpensesPage = (props: PageProps) => {
 			Math.max(0, prevVisibleExpenses - expensesPerPage)
 		);
 	};
+	
 	const expensesCategory = [
 		"Affitto",
 		"alimentari",
@@ -37,6 +39,7 @@ const ExpensesPage = (props: PageProps) => {
 		"abbonamenti",
 		"abbigliamento",
 		"offerta telefonica",
+		"spese burocratiche",
 		"formazione",
 		"debiti",
 		"tecnologia",
@@ -49,6 +52,7 @@ const ExpensesPage = (props: PageProps) => {
 		"sport",
 		"svago",
 		"auto",
+		"alloggi"
 	];
 
 	return (

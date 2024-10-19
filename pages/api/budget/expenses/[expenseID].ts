@@ -12,7 +12,7 @@ export default async function handler(
 	res: NextApiResponse<Expenses>
 ) {
 	const { expenseID }: any = req.query;
-	console.log("EXP id", expenseID);
+	
 	if (req.method === "GET") {
 		try {
 			if (expenseID !== undefined) {

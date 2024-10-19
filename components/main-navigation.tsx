@@ -2,16 +2,14 @@ import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 
 const MainNavigation = () => {
-	const { data: session } = useSession();
+	const { data: session, status} = useSession();
+	console.log('ses data from client', session, status);
 	return (
 		<header>
 			<nav>
 				<ul className={`flex justify-between p-12`}>
 					<li>
-						<Link href="/budget-analysis">Budget analysis</Link>
-					</li>
-					<li>
-						<Link href="/">Home page</Link>
+						<Link href="/">Budget analysis</Link>
 					</li>
 					<li>
 						<Link href="/expenses">Expenses</Link>

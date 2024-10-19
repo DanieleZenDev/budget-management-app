@@ -31,7 +31,9 @@ export async function postUserData(enteredSignupData: UserData) {
 		});
 		console.log("res", response);
 		if (!response.ok) {
-			throw new Error("Network response was not ok");
+			const errorData = await response.json(); 
+			console.log('er mes', errorData.message)
+			throw errorData.message; 
 		}
 		const data = await response.json();
 		return data;

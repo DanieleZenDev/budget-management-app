@@ -5,10 +5,13 @@ import { useRef, useState } from "react";
 
 const AuthForm = () => {
 	const [isLogin, setIsLogin] = useState(true);
-
+	//const [errors, setErrors] = useState({});
 	const emailRef = useRef<HTMLInputElement>(null);
 	const pswRef = useRef<HTMLInputElement>(null);
+	const nameRef = useRef<HTMLInputElement>(null);
+
 	const router = useRouter();
+
 	const switchAuthModeHandler = () => {
 		setIsLogin((prevState) => !prevState);
 	};
@@ -17,45 +20,71 @@ const AuthForm = () => {
 		event.preventDefault();
 		const enteredEmail = emailRef.current?.value;
 		const enteredPsw = pswRef.current?.value;
-		if (enteredEmail && enteredPsw) {
+		const enteredName = nameRef.current?.value;
+		if (enteredEmail && enteredPsw && enteredName) {
 			const enteredData = {
+				Name:enteredName,
 				Email: enteredEmail,
 				Password: enteredPsw,
 			};
 			console.log("ed", enteredData);
 			if (isLogin) {
-				const loginResult = await signIn("credentials", {
-					redirect: false,
-					Email: enteredEmail,
-					Password: enteredPsw,
-				});
-				console.log("loginResult", loginResult);
-				if (loginResult && !loginResult.error) {
-					router.replace("/");
+				try{
+					const loginResult = await signIn("credentials", {
+						redirect: false,
+						Name:enteredName,
+						Email: enteredEmail,
+						Password: enteredPsw,
+					});
+					console.log("loginResult", loginResult);
+					if (loginResult && !loginResult.error) {
+						router.replace("/");
+					}
+				}catch(error:any){
+					console.error("something went wrong during the login", error);
+					//setErrors({ signup: error.message || "Login failed. Please try again." });
 				}
 			} else {
 				try {
 					const result = await postUserData(enteredData);
 					console.log("result", result);
 					router.replace("/");
-				} catch (error) {
-					console.error("something went wrong", error);
+				} catch (error:any) {
+					console.error("something went wrong during signup", error);
+					//setErrors({ signup: error.message || "Signup failed. Please try again." });
 				}
 			}
 		}
 	};
-
+	
 	return (
 		<section className="flex justify-center">
-			<div className="m-12 w-95 max-w-25rem rounded-lg bg-purple-900 shadow-md p-4 text-center w-96">
-				<h1 className="text-center text-white">
+			<div className="max-w-md w-[500px] bg-white shadow-md rounded-lg overflow-hidden">
+				<h1 className="text-center text-xl font-bold bg-blue-500 text-white py-4">
 					{isLogin ? "Login" : "Sign Up"}
 				</h1>
-				<form onSubmit={submitUserData}>
+				<form onSubmit={submitUserData} className="px-6 py-4">
+					{!isLogin && (
+						<div className="mb-[0.5rem]">
+							<label
+								htmlFor="name"
+								className="block text-gray-700 text-sm font-bold mb-2"
+							>
+							Your Name
+							</label>
+							<input
+								type="text"
+								id="name"
+								required
+								ref={nameRef}
+								className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
+							/>
+						</div>
+					)}
 					<div className="mb-[0.5rem]">
 						<label
 							htmlFor="email"
-							className="inline-block text-white font-bold mb-[0.5rem]"
+							className="block text-gray-700 text-sm font-bold mb-2"
 						>
 							Your Email
 						</label>
@@ -64,13 +93,13 @@ const AuthForm = () => {
 							id="email"
 							required
 							ref={emailRef}
-							className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
 						/>
 					</div>
 					<div className="mb-[0.5rem]">
 						<label
 							htmlFor="password"
-							className="inline-block text-white font-bold mb-[0.5rem]"
+							className="block text-gray-700 text-sm font-bold mb-2"
 						>
 							Your Password
 						</label>
@@ -79,17 +108,17 @@ const AuthForm = () => {
 							id="password"
 							required
 							ref={pswRef}
-							className="bg-purple-100 text-purple-900 border border-white rounded-md w-full text-left px-1"
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
 						/>
 					</div>
-					<div className="mt-[1.5rem] flex flex-col items-center">
-						<button className="cursor-pointer font-inherit text-white bg-purple-600 border border-purple-600 rounded-md px-10 py-2 hover:bg-purple-700 hover:border-purple-600">
+					<div className="mt-[1.5rem] flex flex-col items-center gap-10">
+						<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
 							{isLogin ? "Login" : "Create Account"}
 						</button>
 						<button
 							type="button"
 							onClick={switchAuthModeHandler}
-							className="cursor-pointer font-inherit text-white bg-purple-600 border border-purple-600 rounded-md px-10 py-2 hover:bg-purple-700 hover:border-purple-600 mt-[1.2rem] bg-transparent border-none p-[0.15rem 1.5rem]"
+							className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 						>
 							{isLogin ? "Create new account" : "Login with existing account"}
 						</button>

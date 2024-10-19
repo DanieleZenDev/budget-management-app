@@ -1,40 +1,72 @@
-import { Inter } from "next/font/google";
+import BudgetGraphsPage from "@/components/budgetGraphs";
+import FilterSearch from "@/components/filter-search";
+import {
+	getExpensesData,
+	getIncomesData,
+	getSavingsData,
+} from "@/helpers/auth";
+import { ExpensesData, IncomesData, SavingsData } from "@/types";
 import Head from "next/head";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+type BudgetAnalysisPageProps = {
+	expenses: {
+		expensesData: ExpensesData[];
+	};
+	incomes: {
+		incomesData: IncomesData[];
+	};
+	savings: {
+		savingsData: SavingsData[];
+	};
+};
 
-export default function Home() {
+const BudgetAnalysisPage = ({
+	expenses,
+	incomes,
+	savings,
+}: BudgetAnalysisPageProps) => {
+	const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+	const [selectedYear, setSelectedYear] = useState<number | null>(null);
+
+	const handleFilterChange = (month: string, year: number) => {
+		setSelectedMonth(month);
+		setSelectedYear(year);
+	};
 	return (
 		<Fragment>
 			<Head>
-				<title>home page</title>
+				<title>Budget analysis page</title>
 				<meta
 					name="description"
-					content="main page of budget management page"
+					content="graphs about expenses, incomes and savings"
 				/>
 			</Head>
-			<main
-				className={`flex min-h-screen flex-col items-center justify-between p-12 ${inter.className}`}
-			>
-				<div className="border border-orange-300 flex-1">
-					<h1>Expenses</h1>
-					<p>All expenses import for category:..</p>
-					<p>All expenses import for month/year:..</p>
-				</div>
-
-				<div className="border border-orange-300 flex-1">
-					<h1>Incomes</h1>
-					<p>All incomes import for category:..</p>
-					<p>All incomes import for month/year:..</p>
-				</div>
-
-				<div className="border border-orange-300 flex-1">
-					<h1>Savings</h1>
-					<p>All savings import for category:..</p>
-					<p>All savings import for month/year:..</p>
-				</div>
-			</main>
+			<FilterSearch onFilterChange={handleFilterChange} />
+			{selectedYear && selectedMonth && (
+				<BudgetGraphsPage
+					expenses={expenses}
+					incomes={incomes}
+					savings={savings}
+					SelectedMonth={selectedMonth}
+					SelectedYear={selectedYear}
+				/>
+			)}
 		</Fragment>
 	);
+};
+export async function getStaticProps() {
+	const expenses = await getExpensesData();
+	const incomes = await getIncomesData();
+	const savings = await getSavingsData();
+
+	return {
+		props: {
+			expenses: expenses || [],
+			incomes: incomes || [],
+			savings: savings || [],
+		},
+	};
 }
+
+export default BudgetAnalysisPage;

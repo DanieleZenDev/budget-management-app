@@ -2,25 +2,27 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/helpers/auth";
 import { UserData } from "@/types";
-
+import { sign } from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 type Data = {
 	message: string;
 	userdata?: UserData;
+	accessToken?:string;
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 	if (req.method === "POST") {
-		const { Email, Password } = req.body;
-		console.log("em", Email, "psw", Password);
-
+		const { Name, Email, Password } = req.body;
+	
 		if (!Email) {
 			return res.status(422).json({ message: "No email found" });
 		} else if (!Email.includes("@")) {
 			return res.status(422).json({ message: "Email must include a @ symbol" });
 		} else if (!Password) {
 			return res.status(422).json({ message: "No password found" });
+		} else if (!Name){
+			return res.status(422).json({ message: "No name found" });
 		} else if (Password.length < 8) {
 			return res
 				.status(422)
@@ -43,10 +45,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 					Password: hashedPassword,
 				},
 			});
-
-			return res
+			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password }, 'your_super_secret_jwt_key', { expiresIn: '1h' });
+			return res	
 				.status(201)
-				.json({ message: "Created the user", userdata: userData });
+				.json({ message: "Created the user", userdata: userData, accessToken});
 		} catch (error) {
 			console.error("Error creating user:", error);
 			return res.status(500).json({ message: "Internal server error" });

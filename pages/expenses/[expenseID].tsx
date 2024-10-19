@@ -40,6 +40,8 @@ const ExpenseDetailsPage = ({
 		"vacanze",
 		"sport",
 		"svago",
+		"auto",
+		"alloggi"
 	];
 	const deleteExpenseByIdFunction = async () => {
 		try {
