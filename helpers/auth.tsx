@@ -6,6 +6,7 @@ import {
 	UserData,
 } from "@/types";
 import { hash, compare } from "bcryptjs";
+import { signOut } from "next-auth/react";
 
 export async function hashPassword(enteredPassword: string) {
 	const hashedPassword = await hash(enteredPassword, 12);
@@ -19,6 +20,32 @@ export async function verifyPassword({
 	const isValidPsw = await compare(enteredPassword, hashedPassword);
 	return isValidPsw;
 }
+
+export async function refreshAccessToken(refreshToken:string) {
+    try {
+      const res = await fetch('/api/auth/refresh-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+			refreshToken:refreshToken
+          //refreshToken: session?.refreshToken, // Passa il refresh token salvato nella sessione
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to refresh token');
+      }
+
+      const data = await res.json();
+
+      refreshToken = data.accessToken;
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      signOut();
+    }
+  };
 
 export async function postUserData(enteredSignupData: UserData) {
 	try {
