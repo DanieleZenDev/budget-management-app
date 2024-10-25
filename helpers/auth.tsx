@@ -52,6 +52,7 @@ export async function postExpensesData(enteredExpensesData: ExpensesData) {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
+				// "Authorization": `Bearer ${userToken}`
 			},
 			body: JSON.stringify(enteredExpensesData),
 		});

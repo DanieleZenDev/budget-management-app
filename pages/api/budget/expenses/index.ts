@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { ExpensesData } from "@/types";
+import verifyToken from "@/pages/middlewares/verifyUserToken";
+import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
 type Expenses = {
 	message: string;
@@ -10,6 +12,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 	if (req.method === "POST") {
 		const { Category, Expense, Import, Month, Year, User } = req.body;
 		try {
+			
+			console.log('req user id', req.userId);
+			const userId = req.userId ? parseInt(req.userId, 10) : null;
 			const enteredExpenses = await prisma.expenses.create({
 				data: {
 					Category,
@@ -18,6 +23,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 					Month,
 					Year,
 					User,
+					UserId:userId
 				},
 			});
 			res.status(201).json({
@@ -37,6 +43,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 					id: "desc",
 				},
 			});
+			
 			if (allExpenses) {
 				return res.status(200).json({
 					message: "all expenses data retrieved correctly",
@@ -52,3 +59,4 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 	}
 }
 export default handler;
+//export default verifyToken(handler);

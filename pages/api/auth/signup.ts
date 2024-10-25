@@ -33,7 +33,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 			errors.push("No name found");
 		}
 
-		// If there are any validation errors, return them
 		if (errors.length > 0) {
 			console.log("Validation Errors:", errors);
 			return res.status(422).json({ message: errors });
@@ -56,7 +55,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 					Password: hashedPassword,
 				},
 			});
-			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password, name:userData.Name }, 'your_super_secret_jwt_key', { expiresIn: '1h' });
+			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password, name:userData.Name }, 'your_super_secret_jwt_key', { expiresIn: '30m' });
+			
 			return res	
 				.status(201)
 				.json({ message: "Created the user", userdata: userData, accessToken});

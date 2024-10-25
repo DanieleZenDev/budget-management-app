@@ -22,6 +22,7 @@ export interface ExpensesData {
 	Month: string;
 	Year: number;
 	User: string;
+	UserId?:number | null;
 }
 
 export interface IncomesData {

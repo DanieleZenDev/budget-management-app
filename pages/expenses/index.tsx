@@ -72,6 +72,7 @@ const ExpensesPage = (props: PageProps) => {
 						dataEntryType="Post"
 					/>
 					<div className="flex flex-wrap gap-4">
+						
 						{expensesData.slice(0, visibleExpenses).map((expense, index) => (
 							<div>
 								<Link key={index} href={`/expenses/${expense.id}`}>

@@ -18,10 +18,15 @@ model User {
   Name        String?
   Email       String
   Password    String   
+  expenses    Expenses[] 
+  incomes     Incomes[]  
+  savings     Savings[] 
 }
 
 model Expenses {
   id          Int      @id @default(autoincrement())
+  user        User?    @relation(fields: [UserId], references: [id])
+  UserId      Int? 
   Category    String   
   Expense     String
   Import      Int
@@ -32,6 +37,8 @@ model Expenses {
 
 model Incomes {
   id          Int      @id @default(autoincrement())
+  user        User?    @relation(fields: [UserId], references: [id])
+  UserId      Int? 
   Category    String   
   Income      String
   Import      Int
@@ -42,6 +49,8 @@ model Incomes {
 
 model Savings {
   id          Int      @id @default(autoincrement())
+  userid      User?     @relation(fields: [UserId], references: [id])
+  UserId      Int?
   Category    String   
   Saving      String
   Import      Int

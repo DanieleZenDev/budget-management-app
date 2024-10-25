@@ -41,7 +41,7 @@ export default NextAuth({
 				if (!isValidPsw) {
 					throw new Error("Could not proceed with login");
 				}
-				const accessToken = sign({ id: existingUser.id, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '1h' });
+				const accessToken = sign({ id: existingUser.id, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '30m' });
 				return {
 					id: existingUser.id.toString(),
 					email: existingUser.Email,
@@ -60,7 +60,8 @@ export default NextAuth({
             	return {
                 	...token,
                 	id: customUser.id,              
-                	accessToken: customUser.access_token
+                	accessToken: customUser.access_token,
+					
             	};
 			}
 			return token;

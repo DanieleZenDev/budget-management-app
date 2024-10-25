@@ -1,19 +1,21 @@
-import jwt from 'jsonwebtoken';
+
 import { NextApiRequest, NextApiResponse } from 'next';
+import jwt from 'jsonwebtoken';
 
-export function verifyToken(req: NextApiRequest, res: NextApiResponse, next: Function) {
-	const token = req.headers.authorization?.split(' ')[1];
+export default function verifyToken(handler: (arg0: NextApiRequest, arg1: NextApiResponse) => any) {
+    return async (req: NextApiRequest, res: NextApiResponse) => {
+        const token = req.headers.authorization?.split(' ')[1]; 
 
-	if (!token) {
-		return res.status(401).json({ message: 'No token provided' });
-	}
+        if (!token) {
+            return res.status(401).json({ message: 'No token provided' }); 
+        }
 
-    jwt.verify(token, 'your_super_secret_jwt_key', (err, decoded) => {
-        if (err || !decoded) { 
+        try {
+            const decoded = jwt.verify(token, 'your_super_secret_jwt_key') as { id: string };
+            req.userId = decoded.id; 
+            return handler(req, res);
+        } catch (err) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
-        
-        req.userId = (decoded as { id: string }).id; 
-        next();
-    });
+    };
 }
