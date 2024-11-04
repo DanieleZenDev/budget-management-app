@@ -11,8 +11,9 @@ export default function verifyToken(handler: (arg0: NextApiRequest, arg1: NextAp
         }
 
         try {
-            const decoded = jwt.verify(token, 'your_super_secret_jwt_key') as { id: string };
-            req.userId = decoded.id; 
+            const decoded = jwt.verify(token, 'your_super_secret_jwt_key');
+            req.userId = decoded; 
+
             return handler(req, res);
         } catch (err) {
             return res.status(401).json({ message: 'Unauthorized' });

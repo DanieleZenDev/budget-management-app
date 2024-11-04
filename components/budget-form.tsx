@@ -7,6 +7,7 @@ import {
 	updateSavingById,
 } from "@/helpers/auth";
 import { BudgetFormData } from "@/types";
+import { useSession } from "next-auth/react";
 
 import { useRouter } from "next/router";
 import { useRef } from "react";
@@ -26,6 +27,9 @@ const BudgetForm = ({
 	
 	const users = ["Daniele", "Giulia"];
 	const router = useRouter();
+
+	const { data:session } = useSession();
+	const accessToken = session?.accessToken;
 
 	let fullUrl = router.asPath;
 	console.log("furl", fullUrl);
@@ -94,8 +98,9 @@ const BudgetForm = ({
 				User: userEnteredValue,
 			};
 
-			console.log("budget data to pass", budgetDataToPass);
-			postExpensesData(budgetDataToPass);
+			console.log("budget data to pass and access token", budgetDataToPass, accessToken);
+			//postExpensesData(budgetDataToPass);
+			postExpensesData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
 					input.value = "";
@@ -110,7 +115,7 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			console.log("budget data to pass", budgetDataToPass);
+			
 			updateExpenseById(budgetDataToPass, parseInt(String(dynamicId)));
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
@@ -127,7 +132,7 @@ const BudgetForm = ({
 				User: userEnteredValue,
 			};
 			console.log("budget data to pass", budgetDataToPass);
-			postIncomesData(budgetDataToPass);
+			postIncomesData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
 					input.value = "";
@@ -159,7 +164,7 @@ const BudgetForm = ({
 				User: userEnteredValue,
 			};
 			console.log("budget data to pass", budgetDataToPass);
-			postSavingsData(budgetDataToPass);
+			postSavingsData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
 					input.value = "";

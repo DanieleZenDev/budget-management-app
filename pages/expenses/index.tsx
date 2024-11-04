@@ -2,9 +2,13 @@ import BudgetDataPanel from "@/components/budget-data-panel";
 import BudgetForm from "@/components/budget-form";
 import { getExpensesData } from "@/helpers/auth";
 import { ExpensesData } from "@/types";
+import { GetSessionParams, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { getSession } from "next-auth/react";
+
 import { Fragment, useState } from "react";
+import { expensesCategory } from "@/helpers/applicationData";
 
 type PageProps = {
 	expenses: {
@@ -30,31 +34,6 @@ const ExpensesPage = (props: PageProps) => {
 		);
 	};
 	
-	const expensesCategory = [
-		"Affitto",
-		"alimentari",
-		"bollette",
-		"trasporti",
-		"ristoranti",
-		"abbonamenti",
-		"abbigliamento",
-		"offerta telefonica",
-		"spese burocratiche",
-		"formazione",
-		"debiti",
-		"tecnologia",
-		"salute",
-		"cura personale",
-		"spese di casa",
-		"regali",
-		"libri/fumetti",
-		"vacanze",
-		"sport",
-		"svago",
-		"auto",
-		"alloggi"
-	];
-
 	return (
 		<Fragment>
 			<Head>
@@ -73,7 +52,7 @@ const ExpensesPage = (props: PageProps) => {
 					/>
 					<div className="flex flex-wrap gap-4">
 						
-						{expensesData.slice(0, visibleExpenses).map((expense, index) => (
+						{expensesData.length < 10 ? expensesData.map((expense, index) => (
 							<div>
 								<Link key={index} href={`/expenses/${expense.id}`}>
 									<BudgetDataPanel
@@ -84,7 +63,18 @@ const ExpensesPage = (props: PageProps) => {
 									/>
 								</Link>
 							</div>
-						))}
+						)) : expensesData.slice(0, visibleExpenses).map((expense, index) => (
+							<div>
+								<Link key={index} href={`/expenses/${expense.id}`}>
+									<BudgetDataPanel
+										budgetCategory={expense.Category}
+										user={expense.User}
+										budgetImport={expense.Import}
+										budgetOperation={expense.Expense}
+									/>
+								</Link>
+							</div>
+						))} 
 						<div className="flex flex-col gap-1">
 							{expensesData.length > visibleExpenses && (
 								<button onClick={loadMoreExpenses}>Mostra altre spese</button>
@@ -93,6 +83,7 @@ const ExpensesPage = (props: PageProps) => {
 								<button onClick={hideExpenses}>Nascondi 10 spese</button>
 							)}
 						</div>
+						
 					</div>
 				</section>
 			</div>
@@ -100,13 +91,24 @@ const ExpensesPage = (props: PageProps) => {
 	);
 };
 
-export async function getStaticProps() {
-	const allExpenses = await getExpensesData();
-	const allExpensesToPass = allExpenses || [];
+export async function getServerSideProps(context: GetSessionParams | undefined) {
+    const session = await getSession(context);
 
-	return {
-		props: { expenses: allExpensesToPass },
-	};
+    if (!session || !session.accessToken) {
+        return {
+            redirect: {
+                destination: '/auth',
+                permanent: false,
+            },
+        };
+    }
+
+    const allExpenses = await getExpensesData(session?.accessToken);
+	
+    const allExpensesToPass = allExpenses || [];
+
+    return {
+        props: { expenses: allExpensesToPass },
+    };
 }
-
 export default ExpensesPage;

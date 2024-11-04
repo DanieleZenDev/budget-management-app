@@ -1,3 +1,4 @@
+
 import MainNavigation from "./main-navigation";
 
 interface LayoutProps {
@@ -5,7 +6,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = (props) => {
-	
+
 	return (
 		<div>
 			<MainNavigation />

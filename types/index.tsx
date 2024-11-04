@@ -6,6 +6,7 @@ export interface UserData {
 	Email: string;
 	Password: string;
 	Name:string | null;
+	UserId?:number | null;
 }
 
 export interface CustomUser {
@@ -22,7 +23,7 @@ export interface ExpensesData {
 	Month: string;
 	Year: number;
 	User: string;
-	UserId?:number | null;
+	UserId?:string| null;
 }
 
 export interface IncomesData {

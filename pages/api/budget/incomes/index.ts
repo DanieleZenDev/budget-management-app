@@ -1,3 +1,4 @@
+import verifyToken from "@/pages/middlewares/verifyUserToken";
 import { IncomesData } from "@/types";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
@@ -6,8 +7,11 @@ type Incomes = {
 	message: string;
 	incomesData?: IncomesData | IncomesData[];
 };
+
 async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 	const { Category, Income, Import, Month, Year, User } = req.body;
+	const userId = req.userId.id;
+
 	if (req.method === "POST") {
 		try {
 			const enteredIncome = await prisma.incomes.create({
@@ -18,6 +22,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 					Month,
 					Year,
 					User,
+					UserId:userId
 				},
 			});
 			res.status(201).json({
@@ -33,11 +38,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 	} else if (req.method === "GET") {
 		try {
 			const allIncomes = await prisma.incomes.findMany({
+				where: {
+                    UserId: userId
+                },
 				orderBy: {
 					id: "desc",
 				},
 			});
-			console.log("all incomes", allIncomes);
 			if (allIncomes) {
 				res.status(201).json({
 					message: "all expenses data retrieved correctly",
@@ -52,4 +59,5 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 		}
 	}
 }
-export default handler;
+export default verifyToken(handler);
+

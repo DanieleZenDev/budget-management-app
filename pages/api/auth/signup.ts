@@ -47,12 +47,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 			if (existingUser) {
 				return res.status(422).json({ message: "User already exists" });
 			}
-
+		
 			const userData = await prisma.user.create({
 				data: {
 					Name:Name,
 					Email: Email,
-					Password: hashedPassword,
+					Password: hashedPassword
 				},
 			});
 			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password, name:userData.Name }, 'your_super_secret_jwt_key', { expiresIn: '30m' });

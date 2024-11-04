@@ -1,4 +1,5 @@
 import BudgetForm from "@/components/budget-form";
+import { expensesCategory } from "@/helpers/applicationData";
 import {
 	deleteExpenseById,
 	getExpenseById,
@@ -19,30 +20,6 @@ const ExpenseDetailsPage = ({
 	const router = useRouter();
 	const selectedExpense = expenseData.expensesData;
 
-	console.log("exdp", selectedExpense);
-	const expensesCategory = [
-		"Affitto",
-		"alimentari",
-		"bollette",
-		"trasporti",
-		"ristoranti",
-		"abbonamenti",
-		"abbigliamento",
-		"offerta telefonica",
-		"formazione",
-		"debiti",
-		"tecnologia",
-		"salute",
-		"cura personale",
-		"spese di casa",
-		"regali",
-		"libri/fumetti",
-		"vacanze",
-		"sport",
-		"svago",
-		"auto",
-		"alloggi"
-	];
 	const deleteExpenseByIdFunction = async () => {
 		try {
 			await deleteExpenseById(parseInt(String(selectedExpense.id)));

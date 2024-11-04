@@ -1,10 +1,12 @@
 import BudgetDataPanel from "@/components/budget-data-panel";
 import BudgetForm from "@/components/budget-form";
+import { savingsCategory } from "@/helpers/applicationData";
 import { getSavingsData } from "@/helpers/auth";
 import { SavingsData } from "@/types";
+import { GetSessionParams, getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 type PageProps = {
 	savings: {
 		savingsData: SavingsData[];
@@ -13,14 +15,21 @@ type PageProps = {
 
 const SavingsPage = (props: PageProps) => {
 	const { savingsData } = props.savings;
-	console.log("SAV", savingsData);
-	const savingsCategory = [
-		"matrimonio",
-		"auto",
-		"viaggi",
-		"emergente",
-		"salute",
-	];
+	
+	const [visibleSavings, setVisibleSavings] = useState(10);
+	const savingsPerPage = 10;
+
+	const loadMoreSavings = () => {
+		setVisibleSavings(
+			(prevVisibleSavings) => prevVisibleSavings + savingsPerPage
+		);
+	};
+	const hideSavings = () => {
+		setVisibleSavings((prevVisibleSavings) =>
+			Math.max(0, prevVisibleSavings - savingsPerPage)
+		);
+	};
+	
 	return (
 		<Fragment>
 			<Head>
@@ -38,16 +47,38 @@ const SavingsPage = (props: PageProps) => {
 					dataEntryType="Post"
 				/>
 				<div className="flex flex-wrap gap-4">
-					{savingsData.map((saving, index) => (
-						<Link key={index} href={`/savings/${saving.id}`}>
-							<BudgetDataPanel
-								budgetCategory={saving.Category}
-								user={saving.User}
-								budgetImport={saving.Import}
-								budgetOperation={saving.Saving}
-							/>
-						</Link>
-					))}
+					{savingsData.length < 10 ? savingsData.map((saving, index) => (
+							<div>
+								<Link key={index} href={`/savings/${saving.id}`}>
+									<BudgetDataPanel
+										budgetCategory={saving.Category}
+										user={saving.User}
+										budgetImport={saving.Import}
+										budgetOperation={saving.Saving}
+									/>
+								</Link>
+							</div>
+						)) : savingsData.slice(0, visibleSavings).map((saving, index) => (
+							<div>
+								<Link key={index} href={`/savings/${saving.id}`}>
+									<BudgetDataPanel
+										budgetCategory={saving.Category}
+										user={saving.User}
+										budgetImport={saving.Import}
+										budgetOperation={saving.Saving}
+									/>
+								</Link>
+							</div>
+						))} 
+						<div className="flex flex-col gap-1">
+							{savingsData.length > visibleSavings && (
+								<button onClick={loadMoreSavings}>Mostra altri risparmi</button>
+							)}
+							{visibleSavings > savingsPerPage && (
+								<button onClick={hideSavings}>Nascondi 10 entrate</button>
+							)}
+						</div>
+					
 				</div>
 			</section>
 		</div>
@@ -56,13 +87,25 @@ const SavingsPage = (props: PageProps) => {
 	);
 };
 
-export async function getStaticProps() {
-	const allSavings = await getSavingsData();
-	const allSavingsToPass = allSavings || [];
+export async function getServerSideProps(context: GetSessionParams | undefined) {
+    const session = await getSession(context);
 
-	return {
-		props: { savings: allSavingsToPass },
-	};
+    if (!session || !session.accessToken) {
+        return {
+            redirect: {
+                destination: '/auth',
+                permanent: false,
+            },
+        };
+    }
+
+    const allSavings = await getSavingsData(session?.accessToken);
+
+    const allSavingsToPass = allSavings || [];
+
+    return {
+        props: { savings: allSavingsToPass },
+    };
 }
 
 export default SavingsPage;

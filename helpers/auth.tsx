@@ -8,6 +8,14 @@ import {
 import { hash, compare } from "bcryptjs";
 import { signOut } from "next-auth/react";
 
+import { createHash } from 'crypto';
+
+export default function generateUniqueId (userId:number, email:string) {
+    const hash = createHash('sha256');
+    hash.update(`${userId}-${email}`); 
+    return hash.digest('hex'); 
+};
+
 export async function hashPassword(enteredPassword: string) {
 	const hashedPassword = await hash(enteredPassword, 12);
 	return hashedPassword;
@@ -30,7 +38,6 @@ export async function refreshAccessToken(refreshToken:string) {
         },
         body: JSON.stringify({
 			refreshToken:refreshToken
-          //refreshToken: session?.refreshToken, // Passa il refresh token salvato nella sessione
         }),
       });
 
@@ -45,7 +52,7 @@ export async function refreshAccessToken(refreshToken:string) {
       console.error('Error refreshing token:', error);
       signOut();
     }
-  };
+};
 
 export async function postUserData(enteredSignupData: UserData) {
 	try {
@@ -73,13 +80,19 @@ export async function postUserData(enteredSignupData: UserData) {
 	}
 }
 
-export async function postExpensesData(enteredExpensesData: ExpensesData) {
+export async function postExpensesData(enteredExpensesData: ExpensesData, userToken:string | undefined) {
+	
+	if (!userToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+	
 	try {
 		const response = await fetch("/api/budget/expenses", {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
-				// "Authorization": `Bearer ${userToken}`
+				"Authorization": `Bearer ${userToken}`
 			},
 			body: JSON.stringify(enteredExpensesData),
 		});
@@ -96,12 +109,19 @@ export async function postExpensesData(enteredExpensesData: ExpensesData) {
 	}
 }
 
-export async function postIncomesData(enteredIncomesData: IncomesData) {
+export async function postIncomesData(enteredIncomesData: IncomesData, userToken:string | undefined) {
+	
+	if (!userToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
 	try {
 		const response = await fetch("/api/budget/incomes", {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
+				"Authorization": `Bearer ${userToken}`
 			},
 			body: JSON.stringify(enteredIncomesData),
 		});
@@ -115,12 +135,19 @@ export async function postIncomesData(enteredIncomesData: IncomesData) {
 	}
 }
 
-export async function postSavingsData(enteredSavingsData: SavingsData) {
+export async function postSavingsData(enteredSavingsData: SavingsData, userToken:string | undefined) {
+
+	if (!userToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
 	try {
 		const response = await fetch("/api/budget/savings", {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
+				"Authorization": `Bearer ${userToken}`
 			},
 			body: JSON.stringify(enteredSavingsData),
 		});
@@ -134,10 +161,22 @@ export async function postSavingsData(enteredSavingsData: SavingsData) {
 	}
 }
 
-export async function getExpensesData() {
-	console.log("retrieving expenses funciton started");
+export async function getExpensesData(accessToken:string | undefined) {
+	
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+	}
+
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/expenses");
+		const response = await fetch("http://localhost:3000/api/budget/expenses", headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -152,10 +191,22 @@ export async function getExpensesData() {
 	}
 }
 
-export async function getIncomesData() {
-	console.log("retrieving incomes funciton started");
+export async function getIncomesData(accessToken:string | undefined) {
+	
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+	
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+	}
+
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/incomes");
+		const response = await fetch("http://localhost:3000/api/budget/incomes", headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -166,7 +217,37 @@ export async function getIncomesData() {
 		//throw error;
 	}
 }
+
+export async function getSavingsData(accessToken:string | undefined) {
+	
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+	}
+
+	try {
+		const response = await fetch("http://localhost:3000/api/budget/savings", headersToPass);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("There was a problem in retrieving the savings data:", error);
+		//throw error;
+	}
+}
+
+
 export async function getExpenseById(id: number) {
+	
 	try {
 		const response = await fetch(
 			`http://localhost:3000/api/budget/expenses/${id}`
@@ -199,21 +280,6 @@ export async function getIncomeById(id: number) {
 			"There was a problem in retrieving the expenses data by its id:",
 			error
 		);
-	}
-}
-
-export async function getSavingsData() {
-	console.log("retrieving savings funciton started");
-	try {
-		const response = await fetch("http://localhost:3000/api/budget/savings");
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		const data = await response.json();
-		return data;
-	} catch (error) {
-		console.error("There was a problem in retrieving the savings data:", error);
-		//throw error;
 	}
 }
 

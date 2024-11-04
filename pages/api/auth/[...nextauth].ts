@@ -1,8 +1,9 @@
-import { verifyPassword } from "@/helpers/auth";
+import generateUniqueId, { verifyPassword } from "@/helpers/auth";
 import { PrismaClient } from "@prisma/client";
-import NextAuth, { User, Session } from "next-auth";
+import NextAuth, { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { sign } from 'jsonwebtoken';
+
 interface CustomUser extends User {
 	access_token: string;
 }
@@ -12,7 +13,9 @@ declare module 'next-auth' {
 	  accessToken?: string; 
 	}
 }
+
 const prisma = new PrismaClient();
+
 export default NextAuth({
 	providers: [
 		CredentialsProvider({
@@ -41,7 +44,17 @@ export default NextAuth({
 				if (!isValidPsw) {
 					throw new Error("Could not proceed with login");
 				}
-				const accessToken = sign({ id: existingUser.id, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '30m' });
+				
+				const uniqueUserId = generateUniqueId(existingUser.id, existingUser.Email);
+				const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '30m' });
+			
+				await prisma.user.update({
+					where: { id: existingUser.id }, 
+					data: {
+						UserID: uniqueUserId
+					}
+				});
+
 				return {
 					id: existingUser.id.toString(),
 					email: existingUser.Email,
@@ -53,7 +66,6 @@ export default NextAuth({
 	],
 	callbacks: {
 		async jwt ({token, user, session}){
-			console.log('JWT Data :', {token, user, session});
 			if(user){
 				const customUser = user as CustomUser; 
             
@@ -61,22 +73,25 @@ export default NextAuth({
                 	...token,
                 	id: customUser.id,              
                 	accessToken: customUser.access_token,
-					
+					iat: token.iat,
+					exp: token.exp,			
             	};
 			}
 			return token;
 		},
 		async session ({session, token, user}){
-			console.log('SESSION DATA', {session, token, user});
 			return {
 				...session,
 				user:{
 					...session.user,
 					id:token.id,
-					token:token.access_token
+					token:token.access_token,
 				},
 				accessToken: token.accessToken,
+				iat: token.iat,  
+				exp: token.exp,
 			};
+			
 			//return session;
 		}
 	},

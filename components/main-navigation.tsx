@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const MainNavigation = () => {
 	const { data: session, status} = useSession();
-	console.log('ses data user token ', session, session?.accessToken, status);
+
 	return (
 		<header>
 			<nav>

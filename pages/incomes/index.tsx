@@ -1,7 +1,9 @@
 import BudgetDataPanel from "@/components/budget-data-panel";
 import BudgetForm from "@/components/budget-form";
+import { incomesCategory } from "@/helpers/applicationData";
 import { getIncomesData } from "@/helpers/auth";
 import { IncomesData } from "@/types";
+import { GetSessionParams, getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { Fragment, useState } from "react";
@@ -13,8 +15,7 @@ type PageProps = {
 
 const IncomesPage = (props: PageProps) => {
 	const { incomesData } = props.incomes;
-	console.log("inco", incomesData);
-
+	
 	const [visibleIncomes, setVisibleIncomes] = useState(10);
 	const incomesPerPage = 10;
 
@@ -28,14 +29,7 @@ const IncomesPage = (props: PageProps) => {
 			Math.max(0, prevVisibleIncomes - incomesPerPage)
 		);
 	};
-	const incomesCategory = [
-		"Stipendio",
-		"Crediti",
-		"Lavori occasionali",
-		"Prestiti",
-		"Rimborsi",
-		"Regali",
-	];
+	
 	return (
 		<Fragment>
 			<Head>
@@ -53,24 +47,37 @@ const IncomesPage = (props: PageProps) => {
 					dataEntryType="Post"
 				/>
 				<div className="flex flex-wrap gap-4">
-					{incomesData.slice(0, visibleIncomes).map((income, index) => (
-						<Link key={index} href={`/incomes/${income.id}`}>
-							<BudgetDataPanel
-								budgetCategory={income.Category}
-								user={income.User}
-								budgetImport={income.Import}
-								budgetOperation={income.Income}
-							/>
-						</Link>
-					))}
-					<div className="flex flex-col gap-1">
-						{incomesData.length > visibleIncomes && (
-							<button onClick={loadMoreIncomes}>Mostra altre entrate</button>
-						)}
-						{visibleIncomes > incomesPerPage && (
-							<button onClick={hideIncomes}>Nascondi 10 entrate</button>
-						)}
-					</div>
+						{incomesData.length < 10 ? incomesData.map((income, index) => (
+							<div>
+								<Link key={index} href={`/incomes/${income.id}`}>
+									<BudgetDataPanel
+										budgetCategory={income.Category}
+										user={income.User}
+										budgetImport={income.Import}
+										budgetOperation={income.Income}
+									/>
+								</Link>
+							</div>
+						)) : incomesData.slice(0, visibleIncomes).map((income, index) => (
+							<div>
+								<Link key={index} href={`/incomes/${income.id}`}>
+									<BudgetDataPanel
+										budgetCategory={income.Category}
+										user={income.User}
+										budgetImport={income.Import}
+										budgetOperation={income.Income}
+									/>
+								</Link>
+							</div>
+						))} 
+						<div className="flex flex-col gap-1">
+							{incomesData.length > visibleIncomes && (
+								<button onClick={loadMoreIncomes}>Mostra altre entrate</button>
+							)}
+							{visibleIncomes > incomesPerPage && (
+								<button onClick={hideIncomes}>Nascondi 10 entrate</button>
+							)}
+						</div>
 				</div>
 			</section>
 		</div>
@@ -79,13 +86,25 @@ const IncomesPage = (props: PageProps) => {
 	);
 };
 
-export async function getStaticProps() {
-	const allIncomes = await getIncomesData();
-	const allIncomesToPass = allIncomes || [];
+export async function getServerSideProps(context: GetSessionParams | undefined) {
+    const session = await getSession(context);
 
-	return {
-		props: { incomes: allIncomesToPass },
-	};
+    if (!session || !session.accessToken) {
+        return {
+            redirect: {
+                destination: '/auth',
+                permanent: false,
+            },
+        };
+    }
+
+    const allIncomes = await getIncomesData(session?.accessToken);
+
+    const allIncomesToPass = allIncomes || [];
+
+    return {
+        props: { incomes: allIncomesToPass },
+    };
 }
 
 export default IncomesPage;
