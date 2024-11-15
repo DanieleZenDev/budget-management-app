@@ -1,34 +1,37 @@
 import BudgetForm from "@/components/budget-form";
+import { savingsCategory } from "@/helpers/applicationData";
 import {
 	deleteSavingById,
-	getSavingById,
-	getSavingsData,
+	getSavingById
 } from "@/helpers/auth";
 import { SavingsData } from "@/types";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSidePropsContext} from "next";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 
+interface SavingsDataForSpecificDynamicId {
+	savingData:{ savingsData: SavingsData },
+	token:string | undefined
+}
+
 const SavingDetailsPage = ({
 	savingData,
-}: {
-	savingData: { savingsData: SavingsData };
-}) => {
+	token
+}: SavingsDataForSpecificDynamicId) => {
+
+	if (!savingData || !savingData.savingsData) {
+        return <p>Loading...</p>;  
+    }
+
 	const [showUpdateForm, setShowUpdateForm] = useState(false);
 	const selectedSaving = savingData.savingsData;
-	console.log("INC", selectedSaving);
-	const savingsCategory = [
-		"matrimonio",
-		"auto",
-		"viaggi",
-		"emergente",
-		"salute",
-	];
+
 	const router = useRouter();
 	const deleteSavingByIdFunction = async () => {
 		try {
-			await deleteSavingById(parseInt(String(selectedSaving.id)));
+			await deleteSavingById(parseInt(String(selectedSaving.id)), token);
 			router.push("/savings");
 		} catch (error) {
 			console.error("Error deleting saving:", error);
@@ -69,30 +72,57 @@ const SavingDetailsPage = ({
 		
 	);
 };
+export async function getServerSideProps(context: GetServerSidePropsContext | undefined) {
+    const session = await getSession(context);
 
-export const getStaticPaths: GetStaticPaths = async () => {
-	const allSavings = await getSavingsData();
+    if (!session || !session.accessToken) {
+        return {
+            redirect: {
+                destination: '/auth',
+                permanent: false,
+            },
+        };
+    }
+	const { savingID } = context?.params || {}; 
 
-	const paths = allSavings.savingsData.map((saving: SavingsData) => ({
-		params: { savingID: saving.id?.toString() },
-	}));
+    if (!savingID) {
+        return {
+            notFound: true, 
+        };
+    }
 
-	return {
-		paths,
-		//fallback: false,
-		fallback:'blocking'
-	};
-};
+    const allSavings = await getSavingById(parseInt(String(savingID)), session?.accessToken);
+	
+    const allSavingsToPass = allSavings || [];
 
-export const getStaticProps: GetStaticProps = async ({ params }: any) => {
-	const savingID = params.savingID;
-	const savingData = await getSavingById(parseInt(String(savingID)));
+    return {
+        props: { savingData:  allSavingsToPass, token:session?.accessToken },
+    };
+}
 
-	return {
-		props: {
-			savingData,
-		},
-	};
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+// 	const allSavings = await getSavingsData();
+
+// 	const paths = allSavings.savingsData.map((saving: SavingsData) => ({
+// 		params: { savingID: saving.id?.toString() },
+// 	}));
+
+// 	return {
+// 		paths,
+// 		//fallback: false,
+// 		fallback:'blocking'
+// 	};
+// };
+
+// export const getStaticProps: GetStaticProps = async ({ params }: any) => {
+// 	const savingID = params.savingID;
+// 	const savingData = await getSavingById(parseInt(String(savingID)));
+
+// 	return {
+// 		props: {
+// 			savingData,
+// 		},
+// 	};
+// };
 
 export default SavingDetailsPage;

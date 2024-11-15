@@ -29,7 +29,21 @@ const IncomesPage = (props: PageProps) => {
 			Math.max(0, prevVisibleIncomes - incomesPerPage)
 		);
 	};
-	
+	if (!Array.isArray(incomesData) || incomesData.length === 0) {
+        return (
+            <Fragment>
+                <h1>There are no incomes yet, please enter one.</h1>
+                <BudgetForm 
+                    categoryList={incomesCategory} 
+                    category="savings" 
+                    operationType="saving" 
+                    importAmount="savingImport" 
+                    formTitle="Savings form" 
+                    dataEntryType="Post" 
+                />
+            </Fragment>
+        );
+    }
 	return (
 		<Fragment>
 			<Head>

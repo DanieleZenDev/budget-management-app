@@ -7,10 +7,9 @@ import { GetSessionParams, getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { Fragment, useState } from "react";
+
 type PageProps = {
-	savings: {
-		savingsData: SavingsData[];
-	};
+	savings: { savingsData: SavingsData[] };
 };
 
 const SavingsPage = (props: PageProps) => {
@@ -30,6 +29,22 @@ const SavingsPage = (props: PageProps) => {
 		);
 	};
 	
+	if (!Array.isArray(savingsData) || savingsData.length === 0) {
+        return (
+            <Fragment>
+                <h1>There are no savings yet, please enter one.</h1>
+                <BudgetForm 
+                    categoryList={savingsCategory} 
+                    category="savings" 
+                    operationType="saving" 
+                    importAmount="savingImport" 
+                    formTitle="Savings form" 
+                    dataEntryType="Post" 
+                />
+            </Fragment>
+        );
+    }
+
 	return (
 		<Fragment>
 			<Head>
@@ -47,9 +62,10 @@ const SavingsPage = (props: PageProps) => {
 					dataEntryType="Post"
 				/>
 				<div className="flex flex-wrap gap-4">
-					{savingsData.length < 10 ? savingsData.map((saving, index) => (
+					
+					{savingsData.length !== 0 && savingsData.length < 10 ? savingsData.map(saving => (
 							<div>
-								<Link key={index} href={`/savings/${saving.id}`}>
+								<Link key={saving.id} href={`/savings/${saving.id}`}>
 									<BudgetDataPanel
 										budgetCategory={saving.Category}
 										user={saving.User}
@@ -58,9 +74,9 @@ const SavingsPage = (props: PageProps) => {
 									/>
 								</Link>
 							</div>
-						)) : savingsData.slice(0, visibleSavings).map((saving, index) => (
+						)) : savingsData.slice(0, visibleSavings).map(saving => (
 							<div>
-								<Link key={index} href={`/savings/${saving.id}`}>
+								<Link key={saving.id} href={`/savings/${saving.id}`}>
 									<BudgetDataPanel
 										budgetCategory={saving.Category}
 										user={saving.User}
@@ -69,15 +85,17 @@ const SavingsPage = (props: PageProps) => {
 									/>
 								</Link>
 							</div>
-						))} 
-						<div className="flex flex-col gap-1">
-							{savingsData.length > visibleSavings && (
-								<button onClick={loadMoreSavings}>Mostra altri risparmi</button>
-							)}
-							{visibleSavings > savingsPerPage && (
-								<button onClick={hideSavings}>Nascondi 10 entrate</button>
-							)}
-						</div>
+						))
+					} 
+
+					<div className="flex flex-col gap-1">
+						{savingsData.length > visibleSavings && (
+							<button onClick={loadMoreSavings}>Mostra altri risparmi</button>
+						)}
+						{visibleSavings > savingsPerPage && (
+							<button onClick={hideSavings}>Nascondi 10 entrate</button>
+						)}
+					</div>
 					
 				</div>
 			</section>

@@ -29,30 +29,6 @@ export async function verifyPassword({
 	return isValidPsw;
 }
 
-export async function refreshAccessToken(refreshToken:string) {
-    try {
-      const res = await fetch('/api/auth/refresh-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-			refreshToken:refreshToken
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to refresh token');
-      }
-
-      const data = await res.json();
-
-      refreshToken = data.accessToken;
-    } catch (error) {
-      console.error('Error refreshing token:', error);
-      signOut();
-    }
-};
 
 export async function postUserData(enteredSignupData: UserData) {
 	try {
@@ -141,16 +117,17 @@ export async function postSavingsData(enteredSavingsData: SavingsData, userToken
         console.error("Access token is missing or invalid.");
         //throw new Error("Access token is required");
     }
+	const headersToPass = {
+		method: "POST",
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${userToken}`
+		},
+		body: JSON.stringify(enteredSavingsData)
+	}
 
 	try {
-		const response = await fetch("/api/budget/savings", {
-			method: "POST",
-			headers: {
-				"Content-type": "application/json",
-				"Authorization": `Bearer ${userToken}`
-			},
-			body: JSON.stringify(enteredSavingsData),
-		});
+		const response = await fetch("/api/budget/savings", headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -246,48 +223,74 @@ export async function getSavingsData(accessToken:string | undefined) {
 }
 
 
-export async function getExpenseById(id: number) {
+export async function getExpenseById(id: number, accessToken:string | undefined) {
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+	}
+	try {
+		const response = await fetch(`http://localhost:3000/api/budget/expenses/${id}`, headersToPass);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the expenses data by its id:",
+			error
+		);
+	}
+}
+
+export async function getIncomeById(id: number, accessToken:string | undefined) {
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+	}
+	try {
+		const response = await fetch(`http://localhost:3000/api/budget/incomes/${id}`, headersToPass);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the expenses data by its id:",
+			error
+		);
+	}
+}
+
+export async function getSavingById(id: number, accessToken:string | undefined) {
 	
-	try {
-		const response = await fetch(
-			`http://localhost:3000/api/budget/expenses/${id}`
-		);
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		const data = await response.json();
-		return data;
-	} catch (error) {
-		console.error(
-			"There was a problem in retrieving the expenses data by its id:",
-			error
-		);
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
 	}
-}
 
-export async function getIncomeById(id: number) {
 	try {
-		const response = await fetch(
-			`http://localhost:3000/api/budget/incomes/${id}`
-		);
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		const data = await response.json();
-		return data;
-	} catch (error) {
-		console.error(
-			"There was a problem in retrieving the expenses data by its id:",
-			error
-		);
-	}
-}
-
-export async function getSavingById(id: number) {
-	try {
-		const response = await fetch(
-			`http://localhost:3000/api/budget/savings/${id}`
-		);
+		const response = await fetch(`http://localhost:3000/api/budget/savings/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -301,18 +304,23 @@ export async function getSavingById(id: number) {
 	}
 }
 
-export async function updateExpenseById(
-	enteredExpensesData: ExpensesData,
-	id: number
-) {
+export async function updateExpenseById(enteredExpensesData: ExpensesData,id: number, accessToken:string | undefined) {
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		method:"PUT",
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+		body: JSON.stringify(enteredExpensesData),
+	}
+
 	try {
-		const response = await fetch(`/api/budget/expenses/${id}`, {
-			method: "PUT",
-			headers: {
-				"Content-type": "application/json",
-			},
-			body: JSON.stringify(enteredExpensesData),
-		});
+		const response = await fetch(`/api/budget/expenses/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -326,18 +334,24 @@ export async function updateExpenseById(
 	}
 }
 
-export async function updateIncomeById(
-	enteredIncomesData: IncomesData,
-	id: number
-) {
+export async function updateIncomeById(enteredIncomesData: IncomesData,id: number, accessToken:string | undefined) {
+	
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		method:"PUT",
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+		body: JSON.stringify(enteredIncomesData),
+	}
+
 	try {
-		const response = await fetch(`/api/budget/incomes/${id}`, {
-			method: "PUT",
-			headers: {
-				"Content-type": "application/json",
-			},
-			body: JSON.stringify(enteredIncomesData),
-		});
+		const response = await fetch(`/api/budget/incomes/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -351,18 +365,24 @@ export async function updateIncomeById(
 	}
 }
 
-export async function updateSavingById(
-	enteredSavingsData: SavingsData,
-	id: number
-) {
+export async function updateSavingById(enteredSavingsData: SavingsData,id: number, accessToken:string | undefined) {
+	
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		method:"PUT",
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+		body: JSON.stringify(enteredSavingsData),
+	}
+	
 	try {
-		const response = await fetch(`/api/budget/savings/${id}`, {
-			method: "PUT",
-			headers: {
-				"Content-type": "application/json",
-			},
-			body: JSON.stringify(enteredSavingsData),
-		});
+		const response = await fetch(`/api/budget/savings/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -376,14 +396,24 @@ export async function updateSavingById(
 	}
 }
 
-export async function deleteExpenseById(id: number) {
+export async function deleteExpenseById(id: number, accessToken:string | undefined) {
+	
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		method:"DELETE",
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		}
+	}
+
 	try {
-		const response = await fetch(`/api/budget/expenses/${id}`, {
-			method: "DELETE",
-			headers: {
-				"Content-type": "application/json",
-			},
-		});
+		const response = await fetch(`/api/budget/expenses/${id}`, headersToPass);
+
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -397,14 +427,23 @@ export async function deleteExpenseById(id: number) {
 	}
 }
 
-export async function deleteIncomeById(id: number) {
+export async function deleteIncomeById(id: number, accessToken:string | undefined) {
+	
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		method:"DELETE",
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		}
+	}
+
 	try {
-		const response = await fetch(`/api/budget/incomes/${id}`, {
-			method: "DELETE",
-			headers: {
-				"Content-type": "application/json",
-			},
-		});
+		const response = await fetch(`/api/budget/incomes/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -415,14 +454,23 @@ export async function deleteIncomeById(id: number) {
 	}
 }
 
-export async function deleteSavingById(id: number) {
+export async function deleteSavingById(id: number, accessToken:string | undefined) {
+
+	if (!accessToken) {
+        console.error("Access token is missing or invalid.");
+        //throw new Error("Access token is required");
+    }
+
+	const headersToPass = {
+		method:"DELETE",
+		headers: {
+			"Content-type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		}
+	}
+
 	try {
-		const response = await fetch(`/api/budget/savings/${id}`, {
-			method: "DELETE",
-			headers: {
-				"Content-type": "application/json",
-			},
-		});
+		const response = await fetch(`/api/budget/savings/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}

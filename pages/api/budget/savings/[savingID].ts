@@ -1,3 +1,4 @@
+import verifyToken from "@/pages/middlewares/verifyUserToken";
 import { SavingsData } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -7,11 +8,12 @@ type Savings = {
 	message: string;
 	savingsData?: SavingsData | SavingsData[];
 };
-export default async function handler(
+async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Savings>
 ) {
 	const { savingID }: any = req.query;
+	const userId = req.userId.id;
 	
 	if (req.method === "GET") {
 		try {
@@ -19,6 +21,7 @@ export default async function handler(
 				const saving = await prisma.savings.findUnique({
 					where: {
 						id: parseInt(savingID),
+						UserId:userId
 					},
 				});
 
@@ -43,6 +46,7 @@ export default async function handler(
 			const updatedSaving = await prisma.savings.update({
 				where: {
 					id: parseInt(savingID),
+					UserId:userId
 				},
 				data: {
 					Saving,
@@ -70,6 +74,7 @@ export default async function handler(
 			const savingToDelete = await prisma.savings.delete({
 				where: {
 					id: parseInt(savingID),
+					UserId:userId
 				},
 			});
 			if (savingToDelete) {
@@ -85,3 +90,4 @@ export default async function handler(
 		}
 	}
 }
+export default verifyToken(handler);

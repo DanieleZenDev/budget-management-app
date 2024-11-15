@@ -39,21 +39,21 @@ const BudgetForm = ({
 	let userValue = null;
 
 	if (selectedExpenseById) {
-		console.log("sebi", selectedExpenseById);
+		
 		categoryValue = selectedExpenseById.Category;
 		budgetValue = selectedExpenseById.Expense;
 		importValue = selectedExpenseById.Import;
 		userValue = selectedExpenseById.User;
 	}
 	if (selectedincomesById) {
-		console.log("seibi", selectedincomesById);
+		
 		categoryValue = selectedincomesById.Category;
 		budgetValue = selectedincomesById.Income;
 		importValue = selectedincomesById.Import;
 		userValue = selectedincomesById.User;
 	}
 	if (selectedSavingsById) {
-		console.log("seibi", selectedSavingsById);
+		
 		categoryValue = selectedSavingsById.Category;
 		budgetValue = selectedSavingsById.Saving;
 		importValue = selectedSavingsById.Import;
@@ -67,10 +67,10 @@ const BudgetForm = ({
 	const userInputRef = useRef<HTMLSelectElement>(null);
 
 	const actualYear = new Date().getFullYear();
-	console.log("actual year", actualYear);
+
 	const date = new Date();
 	const actualMonth = date.toLocaleString("default", { month: "long" });
-	console.log("month", actualMonth);
+	
 
 	const submitBudgetData = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -98,8 +98,6 @@ const BudgetForm = ({
 				User: userEnteredValue,
 			};
 
-			console.log("budget data to pass and access token", budgetDataToPass, accessToken);
-			//postExpensesData(budgetDataToPass);
 			postExpensesData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
@@ -115,13 +113,9 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			
-			updateExpenseById(budgetDataToPass, parseInt(String(dynamicId)));
-			if (formRef.current) {
-				formRef.current.querySelectorAll("input").forEach((input) => {
-					input.value = "";
-				});
-			}
+		
+			updateExpenseById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
+			router.push("/expenses");
 		} else if (fullUrl === "/incomes") {
 			budgetDataToPass = {
 				Category: budgetCategoryEnteredValue,
@@ -131,13 +125,14 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			console.log("budget data to pass", budgetDataToPass);
+			
 			postIncomesData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
 					input.value = "";
 				});
 			}
+			
 		} else if (fullUrl === `/incomes/${dynamicId}`) {
 			budgetDataToPass = {
 				Category: budgetCategoryEnteredValue,
@@ -147,13 +142,9 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			console.log("budget data to pass", budgetDataToPass);
-			updateIncomeById(budgetDataToPass, parseInt(String(dynamicId)));
-			if (formRef.current) {
-				formRef.current.querySelectorAll("input").forEach((input) => {
-					input.value = "";
-				});
-			}
+
+			updateIncomeById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
+			router.push("/incomes");
 		} else if (fullUrl === "/savings") {
 			budgetDataToPass = {
 				Category: budgetCategoryEnteredValue,
@@ -163,7 +154,7 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			console.log("budget data to pass", budgetDataToPass);
+			
 			postSavingsData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
@@ -179,13 +170,9 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			console.log("budget data to pass", budgetDataToPass);
-			updateSavingById(budgetDataToPass, parseInt(String(dynamicId)));
-			if (formRef.current) {
-				formRef.current.querySelectorAll("input").forEach((input) => {
-					input.value = "";
-				});
-			}
+		
+			updateSavingById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
+			router.push("/savings");
 		}
 	};
 

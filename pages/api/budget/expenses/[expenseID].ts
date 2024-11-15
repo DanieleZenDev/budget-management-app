@@ -1,3 +1,4 @@
+import verifyToken from "@/pages/middlewares/verifyUserToken";
 import { ExpensesData } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -7,11 +8,12 @@ type Expenses = {
 	message: string;
 	expensesData?: ExpensesData | ExpensesData[];
 };
-export default async function handler(
+async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Expenses>
 ) {
 	const { expenseID }: any = req.query;
+	const userId = req.userId.id;
 	
 	if (req.method === "GET") {
 		try {
@@ -19,6 +21,7 @@ export default async function handler(
 				const expense = await prisma.expenses.findUnique({
 					where: {
 						id: parseInt(expenseID),
+						UserId:userId
 					},
 				});
 
@@ -43,6 +46,7 @@ export default async function handler(
 			const updatedExpense = await prisma.expenses.update({
 				where: {
 					id: parseInt(expenseID),
+					UserId:userId
 				},
 				data: {
 					Expense,
@@ -70,6 +74,7 @@ export default async function handler(
 			const expenseToDelete = await prisma.expenses.delete({
 				where: {
 					id: parseInt(expenseID),
+					UserId:userId
 				},
 			});
 			if (expenseToDelete) {
@@ -85,3 +90,5 @@ export default async function handler(
 		}
 	}
 }
+
+export default verifyToken(handler);

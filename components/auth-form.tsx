@@ -4,13 +4,11 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useRef, useState, useEffect } from "react";
-import jwt from 'jsonwebtoken';
-import { refreshAccessToken } from "@/helpers/auth";
 
 const AuthForm = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
     const [authErrors, setAuthErrors] = useState<string[]>([]);
-   
+
     const emailRef = useRef<HTMLInputElement>(null);
     const pswRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
@@ -18,33 +16,6 @@ const AuthForm = () => {
     const router = useRouter();
     const { data: session } = useSession();
 	console.log('session from auth form authform c', session)
-
-	useEffect(() => {
-	  const handleTokenRefresh = async () => {
-		if (session && session.accessToken) {
-		  const decodedToken = jwt.decode(session.accessToken) as { exp: number; id: string };
-			
-		  if (decodedToken && decodedToken.exp) {
-			const expirationTime = decodedToken.exp * 1000;
-			const currentTime = Date.now();
-			const timeUntilExpiration = expirationTime - currentTime;
-  
-			if (timeUntilExpiration > 0) {
-			  const refreshTime = timeUntilExpiration - 60 * 1000; 
-			  const refreshTokenTimer = setTimeout(async () => {
-				if (session.accessToken) { 
-                    await refreshAccessToken(session?.accessToken); 
-				}
-			  }, refreshTime);
-  
-			  return () => clearTimeout(refreshTokenTimer);
-			}
-		  }
-		}
-	  };
-  
-	  handleTokenRefresh();
-	}, [session]); 
 
     const switchAuthModeHandler = () => {
         setIsLogin((prevState) => !prevState);

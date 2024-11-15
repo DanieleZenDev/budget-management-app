@@ -56,43 +56,33 @@ const BudgetAnalysisPage = ({
 		</Fragment>
 	);
 };
-// export async function getServerSideProps(context: GetSessionParams | undefined) {
-//     const session = await getSession(context);
+export async function getServerSideProps(context: GetSessionParams | undefined) {
+    const session = await getSession(context);
+	
+    if (!session || !session.accessToken) {
+        return {
+            redirect: {
+                destination: '/auth',
+                permanent: false,
+            },
+        };
+    }
 
-//     if (!session || !session.accessToken) {
-//         return {
-//             redirect: {
-//                 destination: '/auth',
-//                 permanent: false,
-//             },
-//         };
-//     }
-
-//     const allExpenses = await getExpensesData(session?.accessToken);
-// 	const allIncomes = await getIncomesData(session?.accessToken);
-// 	const allSavings = await getSavingsData(session?.accessToken);
-
-//     return {
-//         props: { 
-// 			expenses: allExpenses,
-// 			incomes:allIncomes,
-// 			savings:allSavings 
-// 		},
-//     };
-// }
-
-export async function getStaticProps() {
-	const expenses = await getExpensesData();
-	const incomes = await getIncomesData();
-	const savings = await getSavingsData();
-
-	return {
-		props: {
-			expenses: expenses || [],
-			incomes: incomes || [],
-			savings: savings || [],
+    const allExpenses = await getExpensesData(session?.accessToken);
+	const allIncomes = await getIncomesData(session?.accessToken);
+	const allSavings = await getSavingsData(session?.accessToken);
+	
+	const allSavingsToPass = allSavings || [];
+	const allExpensesToPass = allExpenses || [];
+	const allIncomesToPass = allIncomes || [];
+    return {
+        props: { 
+			expenses:allExpensesToPass,
+			incomes:allIncomesToPass,
+			savings:allSavingsToPass
 		},
-	};
+    };
 }
+
 
 export default BudgetAnalysisPage;

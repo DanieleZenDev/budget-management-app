@@ -37,10 +37,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 			});
 		}
 	} else if (req.method === "GET") {
+		const months = [
+			"January", "February", "March", "April", "May", "June",
+			"July", "August", "September", "October", "November", "December"
+		];
+		const currentMonth = months[new Date().getMonth()];
+	
 		try {
 			const allExpenses = await prisma.expenses.findMany({
 				where: {
                     UserId: userId, 
+					Month:currentMonth
                 },
 				orderBy: {
 					id: "desc",

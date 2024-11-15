@@ -24,15 +24,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 					UserId:userId
 				},
 			});
+	
 			res.status(201).json({
 				message: "savings data passed successfully",
 				savingsData: enteredSaving,
 			});
 		} else if (req.method === "GET") {
+			const months = [
+				"January", "February", "March", "April", "May", "June",
+				"July", "August", "September", "October", "November", "December"
+			];
+			const currentMonth = months[new Date().getMonth()];
 			try {
 				const allSavings = await prisma.savings.findMany({
 					where: {
-						UserId: userId
+						UserId: userId,
+						Month:currentMonth
 					},
 					orderBy: {
 						id: "desc",
@@ -41,7 +48,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 			
 				if (allSavings) {
 					res.status(201).json({
-						message: "all expenses data retrieved correctly",
+						message: "all savings data retrieved correctly",
 						savingsData: allSavings,
 					});
 				}
@@ -59,5 +66,5 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 		});
 	}
 }
-//export default handler;
+
 export default verifyToken(handler);

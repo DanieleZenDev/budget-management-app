@@ -1,34 +1,36 @@
 import BudgetForm from "@/components/budget-form";
+import { incomesCategory } from "@/helpers/applicationData";
 import {
 	deleteIncomeById,
-	getIncomeById,
-	getIncomesData,
+	getIncomeById
 } from "@/helpers/auth";
 import { IncomesData } from "@/types";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 
+interface IncomesDataForSpecificDynamicId {
+	incomeData:{ incomesData: IncomesData },
+	token:string | undefined
+}
+
 const IncomeDetailsPage = ({
 	incomeData,
-}: {
-	incomeData: { incomesData: IncomesData };
-}) => {
+	token
+}: IncomesDataForSpecificDynamicId) => {
+	
+	if (!incomeData || !incomeData.incomesData) {
+        return <p>Loading...</p>;  
+    }
 	const [showUpdateForm, setShowUpdateForm] = useState(false);
 	const selectedIncome = incomeData.incomesData;
-	const incomesCategory = [
-		"Stipendio",
-		"Crediti",
-		"Lavori occasionali",
-		"Prestiti",
-		"Rimborsi",
-	];
-	console.log("INC", selectedIncome);
+
 	const router = useRouter();
 	const deleteIncomeByIdFunction = async () => {
 		try {
-			await deleteIncomeById(parseInt(String(selectedIncome.id)));
+			await deleteIncomeById(parseInt(String(selectedIncome.id)), token);
 			router.push("/incomes");
 		} catch (error) {
 			console.error("Error deleting income:", error);
@@ -70,29 +72,32 @@ const IncomeDetailsPage = ({
 	);
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-	const allIncomes = await getIncomesData();
+export async function getServerSideProps(context: GetServerSidePropsContext | undefined) {
+    const session = await getSession(context);
 
-	const paths = allIncomes.incomesData.map((income: IncomesData) => ({
-		params: { incomeID: income.id?.toString() },
-	}));
+    if (!session || !session.accessToken) {
+        return {
+            redirect: {
+                destination: '/auth',
+                permanent: false,
+            },
+        };
+    }
+	const { incomeID } = context?.params || {}; 
 
-	return {
-		paths,
-		//fallback: false,
-		fallback:'blocking'
-	};
-};
+    if (!incomeID) {
+        return {
+            notFound: true, 
+        };
+    }
 
-export const getStaticProps: GetStaticProps = async ({ params }: any) => {
-	const incomeID = params.incomeID;
-	const incomeData = await getIncomeById(parseInt(String(incomeID)));
+    const allIncomes = await getIncomeById(parseInt(String(incomeID)), session?.accessToken);
+	
+    const allIncomesToPass = allIncomes || [];
 
-	return {
-		props: {
-			incomeData,
-		},
-	};
-};
+    return {
+        props: { incomeData:  allIncomesToPass, token:session?.accessToken },
+    };
+}
 
 export default IncomeDetailsPage;

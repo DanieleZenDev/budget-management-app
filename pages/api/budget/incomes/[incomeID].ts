@@ -1,3 +1,4 @@
+import verifyToken from "@/pages/middlewares/verifyUserToken";
 import { IncomesData } from "@/types";
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -7,18 +8,20 @@ type Incomes = {
 	message: string;
 	incomesData?: IncomesData | IncomesData[];
 };
-export default async function handler(
+async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Incomes>
 ) {
 	const { incomeID }: any = req.query;
-
+	const userId = req.userId.id;
+	
 	if (req.method === "GET") {
 		try {
 			if (incomeID !== undefined) {
 				const income = await prisma.incomes.findUnique({
 					where: {
 						id: parseInt(incomeID),
+						UserId:userId
 					},
 				});
 
@@ -43,6 +46,7 @@ export default async function handler(
 			const updatedIncome = await prisma.incomes.update({
 				where: {
 					id: parseInt(incomeID),
+					UserId:userId
 				},
 				data: {
 					Income,
@@ -70,6 +74,7 @@ export default async function handler(
 			const incomeToDelete = await prisma.incomes.delete({
 				where: {
 					id: parseInt(incomeID),
+					UserId:userId
 				},
 			});
 			if (incomeToDelete) {
@@ -85,3 +90,5 @@ export default async function handler(
 		}
 	}
 }
+
+export default verifyToken(handler);

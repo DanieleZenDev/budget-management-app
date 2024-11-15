@@ -3,26 +3,34 @@ import { expensesCategory } from "@/helpers/applicationData";
 import {
 	deleteExpenseById,
 	getExpenseById,
-	getExpensesData,
 } from "@/helpers/auth";
 import { ExpensesData } from "@/types";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSidePropsContext, GetStaticPaths, GetStaticProps } from "next";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 
+interface ExpensesDataForSpecificDynamicId {
+	expenseData:{ expensesData: ExpensesData },
+	token:string | undefined
+}
 const ExpenseDetailsPage = ({
 	expenseData,
-}: {
-	expenseData: { expensesData: ExpensesData };
-}) => {
+	token
+}:ExpensesDataForSpecificDynamicId) => {
+
+	if (!expenseData || !expenseData.expensesData) {
+        return <p>Loading...</p>;  
+    }
+	
 	const [showUpdateForm, setShowUpdateForm] = useState(false);
 	const router = useRouter();
 	const selectedExpense = expenseData.expensesData;
 
 	const deleteExpenseByIdFunction = async () => {
 		try {
-			await deleteExpenseById(parseInt(String(selectedExpense.id)));
+			await deleteExpenseById(parseInt(String(selectedExpense.id)), token);
 			router.push("/expenses");
 		} catch (error) {
 			console.error("Error deleting expense:", error);
@@ -65,29 +73,32 @@ const ExpenseDetailsPage = ({
 	);
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-	const allExpenses = await getExpensesData();
+export async function getServerSideProps(context: GetServerSidePropsContext | undefined) {
+    const session = await getSession(context);
 
-	const paths = allExpenses.expensesData.map((expense: ExpensesData) => ({
-		params: { expenseID: expense.id?.toString() },
-	}));
+    if (!session || !session.accessToken) {
+        return {
+            redirect: {
+                destination: '/auth',
+                permanent: false,
+            },
+        };
+    }
+	const { expenseID } = context?.params || {}; 
 
-	return {
-		paths,
-		//fallback: false,
-		fallback:'blocking'
-	};
-};
+    if (!expenseID) {
+        return {
+            notFound: true, 
+        };
+    }
 
-export const getStaticProps: GetStaticProps = async ({ params }: any) => {
-	const expenseID = params.expenseID;
-	const expenseData = await getExpenseById(parseInt(String(expenseID)));
+    const allExpenses = await getExpenseById(parseInt(String(expenseID)), session?.accessToken);
+	
+    const allExpensesToPass = allExpenses || [];
 
-	return {
-		props: {
-			expenseData,
-		},
-	};
-};
+    return {
+        props: { expenseData: allExpensesToPass, token:session?.accessToken },
+    };
+}
 
 export default ExpenseDetailsPage;

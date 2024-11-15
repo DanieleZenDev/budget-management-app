@@ -34,6 +34,22 @@ const ExpensesPage = (props: PageProps) => {
 		);
 	};
 	
+	if (!Array.isArray(expensesData) || expensesData.length === 0) {
+        return (
+            <Fragment>
+                <h1>There are no expenses yet, please enter one.</h1>
+                <BudgetForm 
+                    categoryList={expensesCategory} 
+                    category="savings" 
+                    operationType="saving" 
+                    importAmount="savingImport" 
+                    formTitle="Savings form" 
+                    dataEntryType="Post" 
+                />
+            </Fragment>
+        );
+    }
+
 	return (
 		<Fragment>
 			<Head>
@@ -52,7 +68,7 @@ const ExpensesPage = (props: PageProps) => {
 					/>
 					<div className="flex flex-wrap gap-4">
 						
-						{expensesData.length < 10 ? expensesData.map((expense, index) => (
+					{expensesData.length < 10 ? expensesData.map((expense, index) => (
 							<div>
 								<Link key={index} href={`/expenses/${expense.id}`}>
 									<BudgetDataPanel
