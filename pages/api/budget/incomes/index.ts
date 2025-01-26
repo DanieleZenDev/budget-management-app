@@ -41,11 +41,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 			"July", "August", "September", "October", "November", "December"
 		];
 		const currentMonth = months[new Date().getMonth()];
+		const currentYear = new Date().getFullYear();
+
 		try {
 			const allIncomes = await prisma.incomes.findMany({
 				where: {
                     UserId: userId,
-					Month:currentMonth
+					Month:currentMonth,
+					Year:currentYear
                 },
 				orderBy: {
 					id: "desc",

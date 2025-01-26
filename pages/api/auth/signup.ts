@@ -55,7 +55,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 					Password: hashedPassword
 				},
 			});
-			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password, name:userData.Name }, 'your_super_secret_jwt_key', { expiresIn: '30m' });
+			const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password, name:userData.Name }, 'your_super_secret_jwt_key', { expiresIn: '2h' });
 			
 			return res	
 				.status(201)

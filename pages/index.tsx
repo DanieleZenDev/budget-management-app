@@ -1,6 +1,9 @@
 import BudgetGraphsPage from "@/components/budgetGraphs";
 import FilterSearch from "@/components/filter-search";
 import {
+	getAllExpensesData,
+	getAllIncomesData,
+	getAllSavingsData,
 	getExpensesData,
 	getIncomesData,
 	getSavingsData,
@@ -68,9 +71,9 @@ export async function getServerSideProps(context: GetSessionParams | undefined) 
         };
     }
 
-    const allExpenses = await getExpensesData(session?.accessToken);
-	const allIncomes = await getIncomesData(session?.accessToken);
-	const allSavings = await getSavingsData(session?.accessToken);
+	const allExpenses = await getAllExpensesData(session?.accessToken);
+	const allIncomes = await getAllIncomesData(session?.accessToken);
+	const allSavings = await getAllSavingsData(session?.accessToken);
 	
 	const allSavingsToPass = allSavings || [];
 	const allExpensesToPass = allExpenses || [];

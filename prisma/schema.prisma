@@ -30,7 +30,7 @@ model Expenses {
   UserId      String? 
   Category    String   
   Expense     String
-  Import      Int
+  Import      Decimal @db.Decimal(10,2)
   Month       String
   Year        Int
   User        String
@@ -42,7 +42,7 @@ model Incomes {
   UserId      String? 
   Category    String   
   Income      String
-  Import      Int
+  Import      Decimal @db.Decimal(10,2)
   Month       String
   Year        Int
   User        String
@@ -54,7 +54,7 @@ model Savings {
   UserId      String?
   Category    String   
   Saving      String
-  Import      Int
+  Import      Decimal @db.Decimal(10,2)
   Month       String
   Year        Int
   User        String

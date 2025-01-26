@@ -2,7 +2,6 @@
 import { postUserData } from "@/helpers/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import { useRef, useState, useEffect } from "react";
 
 const AuthForm = () => {
@@ -14,9 +13,7 @@ const AuthForm = () => {
     const nameRef = useRef<HTMLInputElement>(null);
 
     const router = useRouter();
-    const { data: session } = useSession();
-	console.log('session from auth form authform c', session)
-
+    
     const switchAuthModeHandler = () => {
         setIsLogin((prevState) => !prevState);
     };

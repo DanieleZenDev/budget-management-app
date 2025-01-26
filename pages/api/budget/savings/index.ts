@@ -35,11 +35,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 				"July", "August", "September", "October", "November", "December"
 			];
 			const currentMonth = months[new Date().getMonth()];
+			const currentYear = new Date().getFullYear();
+
 			try {
 				const allSavings = await prisma.savings.findMany({
 					where: {
 						UserId: userId,
-						Month:currentMonth
+						Month:currentMonth,
+						Year:currentYear
 					},
 					orderBy: {
 						id: "desc",

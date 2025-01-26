@@ -40,10 +40,10 @@ const ExpensesPage = (props: PageProps) => {
                 <h1>There are no expenses yet, please enter one.</h1>
                 <BudgetForm 
                     categoryList={expensesCategory} 
-                    category="savings" 
-                    operationType="saving" 
-                    importAmount="savingImport" 
-                    formTitle="Savings form" 
+                    category="expenses" 
+                    operationType="expense" 
+                    importAmount="expensesImport" 
+                    formTitle="Expenses form" 
                     dataEntryType="Post" 
                 />
             </Fragment>

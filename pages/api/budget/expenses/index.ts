@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { ExpensesData } from "@/types";
 import verifyToken from "@/pages/middlewares/verifyUserToken";
+
 const prisma = new PrismaClient();
 type Expenses = {
 	message: string;
@@ -41,13 +42,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 			"January", "February", "March", "April", "May", "June",
 			"July", "August", "September", "October", "November", "December"
 		];
+		const currentYear = new Date().getFullYear();
 		const currentMonth = months[new Date().getMonth()];
-	
+		
 		try {
 			const allExpenses = await prisma.expenses.findMany({
 				where: {
                     UserId: userId, 
-					Month:currentMonth
+					Month:currentMonth,
+					Year:currentYear
+					
                 },
 				orderBy: {
 					id: "desc",

@@ -29,6 +29,7 @@ export const expensesCategory = [
     "sport",
     "svago",
     "auto",
+    "multe",
     "alloggi"
 ];
 
@@ -38,4 +39,19 @@ export const savingsCategory = [
     "viaggi",
     "emergente",
     "salute",
+];
+
+export const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
 ];

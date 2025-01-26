@@ -76,15 +76,15 @@ const BudgetForm = ({
 		event.preventDefault();
 
 		const budgetCategoryEnteredValue = budgetCategoryRef.current?.value || "";
-		let budgetOperationTypeEnteredValue =
-			budgetOperationTypeRef.current?.value || "";
+		let budgetOperationTypeEnteredValue = budgetOperationTypeRef.current?.value || "";
 		const budgetImportRefEnteredValue = budgetImportRef.current?.value || "";
 		const userEnteredValue = userInputRef.current?.value || "";
 
 		
-		const importValue = budgetImportRefEnteredValue
-			? parseInt(budgetImportRefEnteredValue)
-			: 0;
+		// const importValue = budgetImportRefEnteredValue
+		// 	? parseInt(budgetImportRefEnteredValue)
+		// 	: 0;
+		const importValue = budgetImportRefEnteredValue ? parseFloat(budgetImportRefEnteredValue) : 0;
 
 		let budgetDataToPass = null;
 
@@ -97,13 +97,15 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-
+			
 			postExpensesData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
 					input.value = "";
 				});
 			}
+
+			router.push("/expenses");
 		} else if (fullUrl === `/expenses/${dynamicId}`) {
 			budgetDataToPass = {
 				Category: budgetCategoryEnteredValue,
@@ -113,7 +115,7 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-		
+			
 			updateExpenseById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
 			router.push("/expenses");
 		} else if (fullUrl === "/incomes") {
@@ -132,7 +134,7 @@ const BudgetForm = ({
 					input.value = "";
 				});
 			}
-			
+			router.push("/incomes");
 		} else if (fullUrl === `/incomes/${dynamicId}`) {
 			budgetDataToPass = {
 				Category: budgetCategoryEnteredValue,
@@ -161,6 +163,7 @@ const BudgetForm = ({
 					input.value = "";
 				});
 			}
+			router.push("/savings");
 		} else if (fullUrl === `/savings/${dynamicId}`) {
 			budgetDataToPass = {
 				Category: budgetCategoryEnteredValue,
@@ -227,6 +230,7 @@ const BudgetForm = ({
 							required
 							defaultValue={importValue ?? ""}
 							ref={budgetImportRef}
+							step="0.01"  
 							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
 						/>
 					</div>

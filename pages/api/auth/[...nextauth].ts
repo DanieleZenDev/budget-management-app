@@ -46,8 +46,8 @@ export default NextAuth({
 				}
 				
 				const uniqueUserId = generateUniqueId(existingUser.id, existingUser.Email);
-				const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '30m' });
-			
+				const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '2h' });
+				
 				await prisma.user.update({
 					where: { id: existingUser.id }, 
 					data: {
@@ -98,5 +98,6 @@ export default NextAuth({
 	secret:'your_super_secret_jwt_key',
 	session: {
 		strategy: 'jwt',
+		//maxAge: 2 * 60 * 60,
 	},
 });

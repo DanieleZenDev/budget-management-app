@@ -55,7 +55,7 @@ const BudgetGraphsPage = ({
 		SelectedMonth,
 		SelectedYear
 	);
-
+	
 	const expensesCategories = currentExpenses.map((expense) => expense.Category);
 	const expensesImports = currentExpenses.map((expense) => expense.Import);
 	const incomesCategories = currentIncomes.map((income) => income.Category);

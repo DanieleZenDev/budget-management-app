@@ -1,3 +1,4 @@
+import { months } from "@/helpers/applicationData";
 import { useRef } from "react";
 type FilterSearchProps = {
 	onFilterChange: (month: string, year: number) => void;
@@ -11,27 +12,12 @@ const FilterSearch = ({ onFilterChange }: FilterSearchProps) => {
 		years.push(year);
 	}
 
-	const months = [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
-	];
 	const retrieveAndPassFilterFormData = (
 		event: React.FormEvent<HTMLFormElement>
 	) => {
 		event.preventDefault();
 		const chosenMonth = monthRef.current?.value;
 		const chosenYear = yearRef.current?.value;
-		//console.log("chosen month", chosenMonth, "chosen year", chosenYear);
 		if (chosenMonth && chosenYear) {
 			onFilterChange(chosenMonth, parseInt(String(chosenYear)));
 		}
