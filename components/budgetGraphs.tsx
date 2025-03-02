@@ -27,11 +27,11 @@ const filterDataByMonthYear = (
 ): BudgetData[] =>
 	data.filter((item) => item.Month === month && item.Year === year);
 
-const calculateTotal = (data: { Import: number }[]): number =>
-	data.reduce(
-		(accumulator, currentValue) => accumulator + currentValue.Import,
-		0
-	);
+const calculateTotal = (data: { Import: number }[]): number => 
+	data.reduce((accumulator, currentValue) => {
+    	const currentImportInCents = Math.round(currentValue.Import * 100) / 100;  
+    	return accumulator + currentImportInCents;
+	}, 0);
 
 const BudgetGraphsPage = ({
 	expenses,
@@ -129,7 +129,7 @@ const BudgetGraphsPage = ({
 						createBudgetTableForMonth(
 							currentExpenses,
 							"expenses",
-							"expensesForMonth"
+							"expensesFor" + "_" + SelectedMonth + "/" + SelectedYear
 						)
 					}
 				>
@@ -165,7 +165,7 @@ const BudgetGraphsPage = ({
 						createBudgetTableForMonth(
 							currentIncomes,
 							"incomes",
-							"incomesForMonth"
+							"incomesFor" + "_" + SelectedMonth + "/" + SelectedYear
 						)
 					}
 				>
@@ -201,7 +201,7 @@ const BudgetGraphsPage = ({
 						createBudgetTableForMonth(
 							currentSavings,
 							"savings",
-							"savingsForMonth"
+							"savingsFor" + "_" + SelectedMonth + "/" + SelectedYear
 						)
 					}
 				>
