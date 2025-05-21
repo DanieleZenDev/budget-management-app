@@ -8,6 +8,8 @@ export const incomesCategory = [
 ];
 
 export const expensesCategory = [
+    "matrimonio",
+    "Bar",
     "Affitto",
     "alimentari",
     "bollette",
