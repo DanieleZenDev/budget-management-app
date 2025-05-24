@@ -1,3 +1,5 @@
+
+import { Prisma } from "@prisma/client";
 import {
 	postExpensesData,
 	postIncomesData,
@@ -59,7 +61,14 @@ const BudgetForm = ({
 		importValue = selectedSavingsById.Import;
 		userValue = selectedSavingsById.User;
 	}
-	
+
+	function getNumberFromDecimal(value: Prisma.Decimal | number): number {
+		if (typeof value === 'object' && 'toNumber' in value) {
+			return value.toNumber();  // mantiene precisione decimale senza arrotondamenti " strani"
+		}
+		return typeof value === 'number' ? value : Number(value);
+	}
+
 	const formRef = useRef<HTMLFormElement>(null);
 	const budgetCategoryRef = useRef<HTMLSelectElement>(null);
 	const budgetOperationTypeRef = useRef<HTMLInputElement>(null);
@@ -80,12 +89,8 @@ const BudgetForm = ({
 		const budgetImportRefEnteredValue = budgetImportRef.current?.value || "";
 		const userEnteredValue = userInputRef.current?.value || "";
 
+		const importValue = budgetImportRefEnteredValue ? Number(budgetImportRefEnteredValue) : 0;
 		
-		// const importValue = budgetImportRefEnteredValue
-		// 	? parseInt(budgetImportRefEnteredValue)
-		// 	: 0;
-		const importValue = budgetImportRefEnteredValue ? parseFloat(budgetImportRefEnteredValue) : 0;
-
 		let budgetDataToPass = null;
 
 		if (fullUrl === "/expenses") {
@@ -177,6 +182,7 @@ const BudgetForm = ({
 			updateSavingById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
 			router.push("/savings");
 		}
+		
 	};
 
 	return (
@@ -228,7 +234,9 @@ const BudgetForm = ({
 							type="number"
 							id={importAmount}
 							required
-							defaultValue={importValue ?? ""}
+							defaultValue={importValue !== null && importValue !== undefined ? getNumberFromDecimal(importValue) : ""}
+							//defaultValue={getNumberFromDecimal(importValue) ?? ""}
+							//defaultValue={importValue ?? ""}
 							ref={budgetImportRef}
 							step="0.01"  
 							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"

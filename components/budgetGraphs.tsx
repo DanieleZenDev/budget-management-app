@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { ExpensesData, IncomesData, SavingsData } from "@/types";
 import dynamic from "next/dynamic";
 import * as XLSX from "xlsx";
@@ -27,11 +28,16 @@ const filterDataByMonthYear = (
 ): BudgetData[] =>
 	data.filter((item) => item.Month === month && item.Year === year);
 
-const calculateTotal = (data: { Import: number }[]): number => 
-	data.reduce((accumulator, currentValue) => {
-    	const currentImportInCents = Math.round(currentValue.Import * 100) / 100;  
-    	return accumulator + currentImportInCents;
-	}, 0);
+const calculateTotal = (data: { Import: number | Prisma.Decimal }[]): number => {
+
+	const totalDecimal = data.reduce((acc, cur) => {
+    	const currentDecimal = cur.Import instanceof Prisma.Decimal ? cur.Import : new Prisma.Decimal(cur.Import);
+
+    	return acc.plus(currentDecimal);
+  	}, new Prisma.Decimal(0));
+
+  return totalDecimal.toDecimalPlaces(2).toNumber();
+};
 
 const BudgetGraphsPage = ({
 	expenses,
@@ -55,13 +61,20 @@ const BudgetGraphsPage = ({
 		SelectedMonth,
 		SelectedYear
 	);
-	
+
+	function decimalToNumber(value: number | Prisma.Decimal): number {
+  		return value instanceof Prisma.Decimal ? value.toNumber() : value;
+	}
+
 	const expensesCategories = currentExpenses.map((expense) => expense.Category);
-	const expensesImports = currentExpenses.map((expense) => expense.Import);
+	//const expensesImports = currentExpenses.map((expense) => expense.Import);
 	const incomesCategories = currentIncomes.map((income) => income.Category);
-	const incomesImports = currentIncomes.map((income) => income.Import);
+	//const incomesImports = currentIncomes.map((income) => income.Import);
 	const savingsCategories = currentSavings.map((saving) => saving.Category);
-	const savingsImports = currentSavings.map((saving) => saving.Import);
+	//const savingsImports = currentSavings.map((saving) => saving.Import);
+	const expensesImports = currentExpenses.map((expense) => decimalToNumber(expense.Import));
+	const incomesImports = currentIncomes.map((income) => decimalToNumber(income.Import));
+	const savingsImports = currentSavings.map((saving) => decimalToNumber(saving.Import));
 
 	const giuliaExpenses = calculateTotal(
 		currentExpenses.filter((expense) => expense.User === "Giulia")
