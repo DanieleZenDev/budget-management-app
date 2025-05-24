@@ -62,8 +62,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 					Password: hashedPassword
 				},
 			});
-			//const accessToken = sign({ id: userData.id, email: userData.Email, password:userData.Password, name:userData.Name }, 'your_super_secret_jwt_key', { expiresIn: '2h' });
+			
 			const accessToken = sign({ id: userData.id, email: userData.Email,  name:userData.Name }, JWT_SECRET, { expiresIn: '2h' });
+			
 			return res	
 				.status(201)
 				.json({ message: "Created the user", userdata: userData, accessToken});

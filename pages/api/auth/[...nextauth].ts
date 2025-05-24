@@ -53,7 +53,6 @@ export default NextAuth({
 				}
 				
 				const uniqueUserId = generateUniqueId(existingUser.id, existingUser.Email);
-				//const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '2h' });
 				
 				const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, name:existingUser.Name }, JWT_SECRET, { expiresIn: '2h' });
 
@@ -100,13 +99,11 @@ export default NextAuth({
 				iat: token.iat,  
 				exp: token.exp,
 			};
-			
-			//return session;
+
 		}
 	},
-	secret:'your_super_secret_jwt_key',
+	secret:process.env.JWT,
 	session: {
 		strategy: 'jwt',
-		//maxAge: 2 * 60 * 60,
 	},
 });
