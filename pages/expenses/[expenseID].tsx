@@ -44,8 +44,8 @@ const ExpenseDetailsPage = ({
 			</Head>
 		<div className="bg-cyan-600 rounded-md flex flex-col gap-3 items-center">
 			<h1 className="font-serif">
-				Expense : <strong>{selectedExpense.Expense}</strong> Import:{" "}
-				<strong>{selectedExpense.Import}</strong>
+				Expense : <strong>{selectedExpense.Expense}</strong>
+				{/* <strong>{selectedExpense.Import}</strong> */}
 			</h1>
 			<p className="font-serif">
 				This expense was made in <strong>{selectedExpense.Month} </strong> in

@@ -37,7 +37,7 @@ const AuthForm = () => {
                     Email: enteredEmail,
                     Password: enteredPsw,
                 });
-               
+            
                 if (loginResult && !loginResult.error) {
                     router.replace("/");
                 } else {

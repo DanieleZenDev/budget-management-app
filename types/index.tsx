@@ -22,7 +22,6 @@ export interface ExpensesData {
 	id?: number;
 	Category: string;
 	Expense: string;
-	//Import: number;
 	Import:Prisma.Decimal | number;
 	Month: string;
 	Year: number;
@@ -34,7 +33,6 @@ export interface IncomesData {
 	id?: number;
 	Category: string;
 	Income: string;
-	//Import: number;
 	Import:Prisma.Decimal | number;
 	Month: string;
 	Year: number;
@@ -45,7 +43,6 @@ export interface SavingsData {
 	id?: number;
 	Category: string;
 	Saving: string;
-	//Import: number;
 	Import:Prisma.Decimal | number;
 	Month: string;
 	Year: number;
