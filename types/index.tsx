@@ -1,3 +1,6 @@
+
+import { Prisma } from "@prisma/client";
+
 export interface HashedPassword {
 	enteredPassword: string;
 	hashedPassword: string;
@@ -19,7 +22,8 @@ export interface ExpensesData {
 	id?: number;
 	Category: string;
 	Expense: string;
-	Import: number;
+	//Import: number;
+	Import:Prisma.Decimal | number;
 	Month: string;
 	Year: number;
 	User: string;
@@ -30,7 +34,8 @@ export interface IncomesData {
 	id?: number;
 	Category: string;
 	Income: string;
-	Import: number;
+	//Import: number;
+	Import:Prisma.Decimal | number;
 	Month: string;
 	Year: number;
 	User: string;
@@ -40,7 +45,8 @@ export interface SavingsData {
 	id?: number;
 	Category: string;
 	Saving: string;
-	Import: number;
+	//Import: number;
+	Import:Prisma.Decimal | number;
 	Month: string;
 	Year: number;
 	User: string;
@@ -62,6 +68,6 @@ export interface BudgetFormData {
 export interface BudgetPanelData {
 	budgetCategory: string;
 	user: string;
-	budgetImport: number;
+	budgetImport: Prisma.Decimal | number;
 	budgetOperation:string;
 }

@@ -26,9 +26,16 @@ export default NextAuth({
 				Name: { label: "Name", type: "text", placeholder: "Your Name" }
 			},
 			async authorize(credentials): Promise<CustomUser | null> {
+				const JWT_SECRET = process.env.JWT_SECRET;
+
+				if (!JWT_SECRET) {
+					throw new Error("Missing JWT_SECRET in environment variables");
+				}
+
 				const existingUser = await prisma.user.findFirst({
 					where: { Email: credentials?.Email },
 				});
+
 				if (!existingUser) {
 					return null;
 				}
@@ -46,8 +53,10 @@ export default NextAuth({
 				}
 				
 				const uniqueUserId = generateUniqueId(existingUser.id, existingUser.Email);
-				const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '2h' });
+				//const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, password:existingUser.Password , name:existingUser.Name }, 'your_super_secret_jwt_key', { expiresIn: '2h' });
 				
+				const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, name:existingUser.Name }, JWT_SECRET, { expiresIn: '2h' });
+
 				await prisma.user.update({
 					where: { id: existingUser.id }, 
 					data: {
