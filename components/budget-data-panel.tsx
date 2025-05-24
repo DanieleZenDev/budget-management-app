@@ -16,7 +16,6 @@ const BudgetDataPanel = ({
 				<strong>{budgetOperation}</strong>
 			</p>
 			<p className="font-serif">
-				{/* Import <strong>:{budgetImport}€</strong> */}
 				Import <strong>: {(typeof budgetImport === 'object' ? budgetImport.toNumber() : Number(budgetImport)).toFixed(2)}€</strong>
 			</p>
 			</div>
