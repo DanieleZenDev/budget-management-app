@@ -67,11 +67,9 @@ const BudgetGraphsPage = ({
 	}
 
 	const expensesCategories = currentExpenses.map((expense) => expense.Category);
-	//const expensesImports = currentExpenses.map((expense) => expense.Import);
 	const incomesCategories = currentIncomes.map((income) => income.Category);
-	//const incomesImports = currentIncomes.map((income) => income.Import);
 	const savingsCategories = currentSavings.map((saving) => saving.Category);
-	//const savingsImports = currentSavings.map((saving) => saving.Import);
+
 	const expensesImports = currentExpenses.map((expense) => decimalToNumber(expense.Import));
 	const incomesImports = currentIncomes.map((income) => decimalToNumber(income.Import));
 	const savingsImports = currentSavings.map((saving) => decimalToNumber(saving.Import));

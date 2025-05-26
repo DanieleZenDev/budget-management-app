@@ -235,8 +235,6 @@ const BudgetForm = ({
 							id={importAmount}
 							required
 							defaultValue={importValue !== null && importValue !== undefined ? getNumberFromDecimal(importValue) : ""}
-							//defaultValue={getNumberFromDecimal(importValue) ?? ""}
-							//defaultValue={importValue ?? ""}
 							ref={budgetImportRef}
 							step="0.01"  
 							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
