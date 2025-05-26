@@ -67,7 +67,7 @@ export default NextAuth({
 					id: existingUser.id.toString(),
 					email: existingUser.Email,
 					name:  existingUser.Name,
-					access_token: accessToken,
+					access_token: accessToken
 				};
 			},
 		}),

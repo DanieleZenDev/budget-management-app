@@ -43,7 +43,6 @@ export default function verifyToken(handler: (arg0: NextApiRequest, arg1: NextAp
 		}
 
         try {
-            //const decoded = jwt.verify(token, 'your_super_secret_jwt_key');
             const decoded = jwt.verify(token, secret);
 			req.userId = decoded; 
 

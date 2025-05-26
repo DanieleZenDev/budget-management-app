@@ -6,9 +6,10 @@ import {
 	UserData,
 } from "@/types";
 import { hash, compare } from "bcryptjs";
-import { signOut } from "next-auth/react";
 
 import { createHash } from 'crypto';
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export default function generateUniqueId (userId:number, email:string) {
     const hash = createHash('sha256');
@@ -153,7 +154,8 @@ export async function getExpensesData(accessToken:string | undefined) {
 	}
 
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/expenses", headersToPass);
+		//const response = await fetch("http://localhost:3000/api/budget/expenses", headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/expenses`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -183,8 +185,8 @@ export async function getAllExpensesData(accessToken:string | undefined) {
 	}
 
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/allexpenses", headersToPass);
-		console.log('res f all ex', response)
+		//const response = await fetch("http://localhost:3000/api/budget/allexpenses", headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/allexpenses`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -214,7 +216,8 @@ export async function getIncomesData(accessToken:string | undefined) {
 	}
 
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/incomes", headersToPass);
+		//const response = await fetch("http://localhost:3000/api/budget/incomes", headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/incomes`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -241,7 +244,8 @@ export async function getAllIncomesData(accessToken:string | undefined) {
 	}
 
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/allincomes", headersToPass);
+		//const response = await fetch("http://localhost:3000/api/budget/allincomes", headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/allincomes`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -268,7 +272,8 @@ export async function getSavingsData(accessToken:string | undefined) {
 	}
 
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/savings", headersToPass);
+		//const response = await fetch("http://localhost:3000/api/budget/savings", headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/savings`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -295,7 +300,8 @@ export async function getAllSavingsData(accessToken:string | undefined) {
 	}
 
 	try {
-		const response = await fetch("http://localhost:3000/api/budget/allsavings", headersToPass);
+		//const response = await fetch("http://localhost:3000/api/budget/allsavings", headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/allsavings`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -320,7 +326,8 @@ export async function getExpenseById(id: number, accessToken:string | undefined)
 		},
 	}
 	try {
-		const response = await fetch(`http://localhost:3000/api/budget/expenses/${id}`, headersToPass);
+		//const response = await fetch(`http://localhost:3000/api/budget/expenses/${id}`, headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/expenses/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -346,7 +353,8 @@ export async function getIncomeById(id: number, accessToken:string | undefined) 
 		},
 	}
 	try {
-		const response = await fetch(`http://localhost:3000/api/budget/incomes/${id}`, headersToPass);
+		//const response = await fetch(`http://localhost:3000/api/budget/incomes/${id}`, headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/incomes/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -374,7 +382,8 @@ export async function getSavingById(id: number, accessToken:string | undefined) 
 	}
 
 	try {
-		const response = await fetch(`http://localhost:3000/api/budget/savings/${id}`, headersToPass);
+		//const response = await fetch(`http://localhost:3000/api/budget/savings/${id}`, headersToPass);
+		const response = await fetch(`${baseUrl}/api/budget/savings/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
