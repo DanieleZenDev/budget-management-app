@@ -64,16 +64,18 @@ const BudgetForm = ({
 
 	function getNumberFromDecimal(value: Prisma.Decimal | number): number {
 		if (typeof value === 'object' && 'toNumber' in value) {
-			return value.toNumber();  // mantiene precisione decimale senza arrotondamenti " strani"
+			return value.toNumber();  
 		}
 		return typeof value === 'number' ? value : Number(value);
 	}
 
 	const formRef = useRef<HTMLFormElement>(null);
-	const budgetCategoryRef = useRef<HTMLSelectElement>(null);
+	//const budgetCategoryRef = useRef<HTMLSelectElement>(null);
+	const budgetCategoryRef = useRef<HTMLInputElement>(null);
 	const budgetOperationTypeRef = useRef<HTMLInputElement>(null);
 	const budgetImportRef = useRef<HTMLInputElement>(null);
-	const userInputRef = useRef<HTMLSelectElement>(null);
+	//const userInputRef = useRef<HTMLSelectElement>(null);
+	const userInputRef = useRef<HTMLInputElement>(null);
 
 	const actualYear = new Date().getFullYear();
 
@@ -193,7 +195,8 @@ const BudgetForm = ({
 				</h1>
 				<form className="px-6 py-4" onSubmit={submitBudgetData} ref={formRef}>
 					<div className="mb-[0.5rem]">
-						<h1 className="block text-gray-700 text-sm font-bold mb-2">
+						
+						{/* <h1 className="block text-gray-700 text-sm font-bold mb-2">
 							Category
 						</h1>
 						<select
@@ -206,6 +209,21 @@ const BudgetForm = ({
 								<option key={idx}>{scategory}</option>
 							))}
 						</select>
+							 */}
+						<label
+							htmlFor={category}
+							className="block text-gray-700 text-sm font-bold mb-2"
+						>
+							Category
+						</label>
+						<input
+							type="text"
+							id={category}
+							ref={budgetCategoryRef}
+							defaultValue={categoryValue ?? ""}
+							required
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
+						/>
 					</div>
 					<div className="mb-[0.5rem]">
 						<label
@@ -241,7 +259,7 @@ const BudgetForm = ({
 						/>
 					</div>
 					<div className="mb-[0.5rem]">
-						<h1 className="block text-gray-700 text-sm font-bold mb-2">
+						{/* <h1 className="block text-gray-700 text-sm font-bold mb-2">
 							Users
 						</h1>
 						<select
@@ -253,7 +271,21 @@ const BudgetForm = ({
 							{users.map((user, idx) => (
 								<option key={idx}>{user}</option>
 							))}
-						</select>
+						</select> */}
+						<label
+							htmlFor="user"
+							className="block text-gray-700 text-sm font-bold mb-2"
+						>
+							Users
+						</label>
+						<input
+							type="text"
+							id="user"
+							ref={userInputRef}
+							defaultValue={userValue ?? ""}
+							required
+							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
+						/>
 					</div>
 
 					<div className="mt-[1.5rem] flex flex-col items-center">

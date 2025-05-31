@@ -52,7 +52,6 @@ export async function postUserData(enteredSignupData: UserData) {
 		const data = await response.json();
 		return { data };
 	} catch (error) {
-		//return { error }
 		return { error: [error] }; 
 	}
 }
@@ -61,7 +60,6 @@ export async function postExpensesData(enteredExpensesData: ExpensesData, userTo
 	
 	if (!userToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 	
 	try {
@@ -90,7 +88,6 @@ export async function postIncomesData(enteredIncomesData: IncomesData, userToken
 	
 	if (!userToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	try {
@@ -116,7 +113,6 @@ export async function postSavingsData(enteredSavingsData: SavingsData, userToken
 
 	if (!userToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 	const headersToPass = {
 		method: "POST",
@@ -143,7 +139,6 @@ export async function getExpensesData(accessToken:string | undefined) {
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -154,7 +149,6 @@ export async function getExpensesData(accessToken:string | undefined) {
 	}
 
 	try {
-		//const response = await fetch("http://localhost:3000/api/budget/expenses", headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/expenses`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -166,7 +160,6 @@ export async function getExpensesData(accessToken:string | undefined) {
 			"There was a problem in retrieving the expenses data:",
 			error
 		);
-		//throw error;
 	}
 }
 
@@ -174,7 +167,6 @@ export async function getAllExpensesData(accessToken:string | undefined) {
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -185,7 +177,6 @@ export async function getAllExpensesData(accessToken:string | undefined) {
 	}
 
 	try {
-		//const response = await fetch("http://localhost:3000/api/budget/allexpenses", headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/allexpenses`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -197,7 +188,6 @@ export async function getAllExpensesData(accessToken:string | undefined) {
 			"There was a problem in retrieving the expenses data:",
 			error
 		);
-		//throw error;
 	}
 }
 
@@ -205,7 +195,6 @@ export async function getIncomesData(accessToken:string | undefined) {
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 	
 	const headersToPass = {
@@ -216,7 +205,6 @@ export async function getIncomesData(accessToken:string | undefined) {
 	}
 
 	try {
-		//const response = await fetch("http://localhost:3000/api/budget/incomes", headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/incomes`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -225,7 +213,6 @@ export async function getIncomesData(accessToken:string | undefined) {
 		return data;
 	} catch (error) {
 		console.error("There was a problem in retrieving the incomes data:", error);
-		//throw error;
 	}
 }
 
@@ -233,7 +220,6 @@ export async function getAllIncomesData(accessToken:string | undefined) {
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 	
 	const headersToPass = {
@@ -244,7 +230,6 @@ export async function getAllIncomesData(accessToken:string | undefined) {
 	}
 
 	try {
-		//const response = await fetch("http://localhost:3000/api/budget/allincomes", headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/allincomes`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -253,7 +238,6 @@ export async function getAllIncomesData(accessToken:string | undefined) {
 		return data;
 	} catch (error) {
 		console.error("There was a problem in retrieving the incomes data:", error);
-		//throw error;
 	}
 }
 
@@ -261,7 +245,6 @@ export async function getSavingsData(accessToken:string | undefined) {
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -272,7 +255,6 @@ export async function getSavingsData(accessToken:string | undefined) {
 	}
 
 	try {
-		//const response = await fetch("http://localhost:3000/api/budget/savings", headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/savings`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -281,7 +263,6 @@ export async function getSavingsData(accessToken:string | undefined) {
 		return data;
 	} catch (error) {
 		console.error("There was a problem in retrieving the savings data:", error);
-		//throw error;
 	}
 }
 
@@ -289,7 +270,6 @@ export async function getAllSavingsData(accessToken:string | undefined) {
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -300,7 +280,6 @@ export async function getAllSavingsData(accessToken:string | undefined) {
 	}
 
 	try {
-		//const response = await fetch("http://localhost:3000/api/budget/allsavings", headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/allsavings`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -309,14 +288,12 @@ export async function getAllSavingsData(accessToken:string | undefined) {
 		return data;
 	} catch (error) {
 		console.error("There was a problem in retrieving the savings data:", error);
-		//throw error;
 	}
 }
 
 export async function getExpenseById(id: number, accessToken:string | undefined) {
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -326,7 +303,6 @@ export async function getExpenseById(id: number, accessToken:string | undefined)
 		},
 	}
 	try {
-		//const response = await fetch(`http://localhost:3000/api/budget/expenses/${id}`, headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/expenses/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -344,7 +320,6 @@ export async function getExpenseById(id: number, accessToken:string | undefined)
 export async function getIncomeById(id: number, accessToken:string | undefined) {
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 	const headersToPass = {
 		headers: {
@@ -353,7 +328,6 @@ export async function getIncomeById(id: number, accessToken:string | undefined) 
 		},
 	}
 	try {
-		//const response = await fetch(`http://localhost:3000/api/budget/incomes/${id}`, headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/incomes/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -372,7 +346,6 @@ export async function getSavingById(id: number, accessToken:string | undefined) 
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 	const headersToPass = {
 		headers: {
@@ -382,7 +355,6 @@ export async function getSavingById(id: number, accessToken:string | undefined) 
 	}
 
 	try {
-		//const response = await fetch(`http://localhost:3000/api/budget/savings/${id}`, headersToPass);
 		const response = await fetch(`${baseUrl}/api/budget/savings/${id}`, headersToPass);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -400,7 +372,6 @@ export async function getSavingById(id: number, accessToken:string | undefined) 
 export async function updateExpenseById(enteredExpensesData: ExpensesData,id: number, accessToken:string | undefined) {
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -431,7 +402,6 @@ export async function updateIncomeById(enteredIncomesData: IncomesData,id: numbe
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -462,7 +432,6 @@ export async function updateSavingById(enteredSavingsData: SavingsData,id: numbe
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -493,7 +462,6 @@ export async function deleteExpenseById(id: number, accessToken:string | undefin
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -524,7 +492,6 @@ export async function deleteIncomeById(id: number, accessToken:string | undefine
 	
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
@@ -551,7 +518,6 @@ export async function deleteSavingById(id: number, accessToken:string | undefine
 
 	if (!accessToken) {
         console.error("Access token is missing or invalid.");
-        //throw new Error("Access token is required");
     }
 
 	const headersToPass = {
