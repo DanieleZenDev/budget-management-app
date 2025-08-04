@@ -3,6 +3,7 @@ import { postUserData } from "@/helpers/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useRef, useState, useEffect } from "react";
+import { getSession } from "next-auth/react";
 
 const AuthForm = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -40,7 +41,25 @@ const AuthForm = () => {
                 });
                 // Check if login was successful
                 if (loginResult && !loginResult.error) {
-                    router.replace("/");
+                    //router.replace("/");
+                    let retries = 0;
+                    let session = null;
+
+                    // Aspetta che la sessione venga creata (max 5 tentativi)
+                    while (retries < 5 && !session) {
+                        session = await getSession();
+                        if (!session) {
+                            await new Promise((res) => setTimeout(res, 100)); // aspetta 100ms
+                            retries++;
+                        }
+                    }
+
+                    if (session) {
+                        router.replace("/"); 
+                    } else {
+                        console.warn("Sessione non trovata, forzo ricaricamento.");
+                        router.reload(); // fallback nel caso qualcosa non funzioni
+                    }
                 } else {
                     setAuthErrors([loginResult?.error || "Login failed!"]);
                 }
@@ -64,7 +83,7 @@ const AuthForm = () => {
             }
         }
     };
-    
+
     return (
         <section className="flex justify-center">
             <div className="max-w-md w-[500px] bg-white shadow-md rounded-lg overflow-hidden">
