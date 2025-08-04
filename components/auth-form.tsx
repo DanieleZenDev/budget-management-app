@@ -3,7 +3,6 @@ import { postUserData } from "@/helpers/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useRef, useState, useEffect } from "react";
-import { getSession } from "next-auth/react";
 
 const AuthForm = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -36,17 +35,13 @@ const AuthForm = () => {
             try {
                 const loginResult = await signIn("credentials", {
                     redirect: false,
+                    callbackUrl: "/",
                     Email: enteredEmail,
                     Password: enteredPsw,
                 });
                 // Check if login was successful
                 if (loginResult && !loginResult.error) {
-                
-                    const session = await getSession();
-        
-                    if (session && session.accessToken) {   
-                        router.replace("/");
-                    }
+                    router.replace("/");
                 } else {
                     setAuthErrors([loginResult?.error || "Login failed!"]);
                 }
