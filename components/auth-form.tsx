@@ -64,19 +64,7 @@ const AuthForm = () => {
             }
         }
     };
-    useEffect(() => {
-        if (router.query.error === "CredentialsSignin") {
-            setAuthErrors(["Email o password errati."]);
     
-            // Pulisce la query ?error dalla barra degli indirizzi senza ricaricare
-            const { error, ...rest } = router.query;
-            router.replace(
-                { pathname: router.pathname, query: rest },
-                undefined,
-                { shallow: true }
-            );
-        }
-    }, [router.query]);
     return (
         <section className="flex justify-center">
             <div className="max-w-md w-[500px] bg-white shadow-md rounded-lg overflow-hidden">
