@@ -6,6 +6,7 @@ const MainNavigation = () => {
 	if (status === "loading") {
 		return <p>Loading...</p>;
 	}
+	
 	return (
 		<header>
 			<nav>
