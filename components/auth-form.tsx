@@ -33,7 +33,8 @@ const AuthForm = () => {
         if (isLogin) {
             try {
                 const loginResult = await signIn("credentials", {
-                    redirect: false,
+                    //redirect: false,
+                    redirect:true,
                     Email: enteredEmail,
                     Password: enteredPsw,
                 });
@@ -43,8 +44,7 @@ const AuthForm = () => {
                 } else {
                     setAuthErrors([loginResult?.error || "Login failed!"]);
                 }
-				console.log("Login Result:", loginResult);
-                
+				
             } catch (error: any) {
                 console.error("Something went wrong during login", error);
                 setAuthErrors(["An unexpected error occurred."]);
@@ -52,7 +52,7 @@ const AuthForm = () => {
         } else {
             try {
                 const result = await postUserData(enteredData);
-                console.log("Signup Result:", result.data.accessToken);
+                
                 if (result.error) {
                     setAuthErrors(result.error);
                 } else {
