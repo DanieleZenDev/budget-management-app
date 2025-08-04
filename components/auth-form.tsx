@@ -19,7 +19,14 @@ const AuthForm = () => {
     const switchAuthModeHandler = () => {
         setIsLogin((prevState) => !prevState);
     };
-    
+    const waitForSession = async (retries = 10, delay = 200) => {
+        for (let i = 0; i < retries; i++) {
+            const session = await getSession();
+            if (session && session.accessToken) return session;
+            await new Promise((res) => setTimeout(res, delay));
+        }
+        return null;
+    };
     const submitUserData = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const enteredEmail = emailRef.current?.value || '';
@@ -42,7 +49,8 @@ const AuthForm = () => {
                 // Check if login was successful
                 if (loginResult && !loginResult.error) {
                     //router.replace("/");
-                    const session = await getSession();
+                    //const session = await getSession();
+                    const session = await waitForSession();
                     if (session && session.accessToken) {   
                         router.replace("/");
                     }
