@@ -42,23 +42,10 @@ const AuthForm = () => {
                 // Check if login was successful
                 if (loginResult && !loginResult.error) {
                     //router.replace("/");
-                    let retries = 0;
-                    let session = null;
-
-                    // Aspetta che la sessione venga creata (max 5 tentativi)
-                    while (retries < 5 && !session) {
-                        session = await getSession();
-                        if (!session) {
-                            await new Promise((res) => setTimeout(res, 100)); // aspetta 100ms
-                            retries++;
-                        }
-                    }
-
-                    if (session) {
-                        router.replace("/"); 
-                    } else {
-                        console.warn("Sessione non trovata, forzo ricaricamento.");
-                        router.reload(); // fallback nel caso qualcosa non funzioni
+                    const session = await getSession();
+                    if (session && session.accessToken) {   
+                        // Redirect to the home page or any other page
+                        router.replace("/");
                     }
                 } else {
                     setAuthErrors([loginResult?.error || "Login failed!"]);
