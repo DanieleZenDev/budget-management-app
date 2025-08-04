@@ -45,6 +45,7 @@ const AuthForm = () => {
                     const session = await getSession();
                     if (session && session.accessToken) {   
                         // Redirect to the home page or any other page
+                        console.log('session', session);
                         router.replace("/");
                     }
                 } else {
