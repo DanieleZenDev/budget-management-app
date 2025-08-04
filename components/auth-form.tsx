@@ -45,7 +45,7 @@ const AuthForm = () => {
                     const session = await getSession();
         
                     if (session && session.accessToken) {   
-                        router.replace("/");
+                        router.replace("/expenses");
                     }
                 } else {
                     setAuthErrors([loginResult?.error || "Login failed!"]);
