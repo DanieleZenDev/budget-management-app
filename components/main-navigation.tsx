@@ -3,9 +3,7 @@ import Link from "next/link";
 
 const MainNavigation = () => {
 	const { data: session, status} = useSession();
-	if (status === "loading") {
-		return <p>Loading...</p>;
-	}
+	
 	console.log("Session data:", session);
 	return (
 		<header>
