@@ -41,11 +41,11 @@ const AuthForm = () => {
                 });
                 // Check if login was successful
                 if (loginResult && !loginResult.error) {
-                    //router.replace("/");
+                
                     const session = await getSession();
         
                     if (session && session.accessToken) {   
-                        router.replace("/expenses");
+                        router.replace("/");
                     }
                 } else {
                     setAuthErrors([loginResult?.error || "Login failed!"]);
