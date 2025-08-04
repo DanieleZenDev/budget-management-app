@@ -3,9 +3,12 @@ import { postUserData } from "@/helpers/auth";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useRef, useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 const AuthForm = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
+    const { data: session, status} = useSession();
+    
     const [authErrors, setAuthErrors] = useState<string[]>([]);
 
     const emailRef = useRef<HTMLInputElement>(null);
@@ -17,7 +20,7 @@ const AuthForm = () => {
     const switchAuthModeHandler = () => {
         setIsLogin((prevState) => !prevState);
     };
-
+    
     const submitUserData = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const enteredEmail = emailRef.current?.value || '';
@@ -33,17 +36,19 @@ const AuthForm = () => {
         if (isLogin) {
             try {
                 const loginResult = await signIn("credentials", {
-                    //redirect: false,
-                    redirect:true,
+                    redirect: false,
+                    //redirect:true,
                     Email: enteredEmail,
                     Password: enteredPsw,
                 });
-            
-                if (loginResult && !loginResult.error) {
-                    router.replace("/");
-                } else {
-                    setAuthErrors([loginResult?.error || "Login failed!"]);
+                if (loginResult?.error) {
+                    setAuthErrors([loginResult.error]);
                 }
+                // if (loginResult && !loginResult.error) {
+                //     router.replace("/");
+                // } else {
+                //     setAuthErrors([loginResult?.error || "Login failed!"]);
+                // }
 				
             } catch (error: any) {
                 console.error("Something went wrong during login", error);
@@ -52,19 +57,26 @@ const AuthForm = () => {
         } else {
             try {
                 const result = await postUserData(enteredData);
-                
-                if (result.error) {
-                    setAuthErrors(result.error);
-                } else {
-                    router.replace("/");
+                if (result?.error) {
+                    setAuthErrors([result.error]);
                 }
+                // if (result.error) {
+                //     setAuthErrors(result.error);
+                // } else {
+                //     router.replace("/");
+                // }
             } catch (error: any) {
                 console.error("Something went wrong during signup", error);
                 setAuthErrors(["An unexpected error occurred."]);
             }
         }
     };
-
+    useEffect(() => {
+        if (status === "authenticated") {
+            // Se sono loggato, vai alla home (o dove vuoi)
+            router.replace("/");
+        }
+    }, [status, router]);
     return (
         <section className="flex justify-center">
             <div className="max-w-md w-[500px] bg-white shadow-md rounded-lg overflow-hidden">
