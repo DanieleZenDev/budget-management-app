@@ -6,7 +6,7 @@ const MainNavigation = () => {
 	if (status === "loading") {
 		return <p>Loading...</p>;
 	}
-	
+	console.log("Session data:", session);
 	return (
 		<header>
 			<nav>
