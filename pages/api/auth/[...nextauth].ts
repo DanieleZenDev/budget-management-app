@@ -93,7 +93,8 @@ export default NextAuth({
 				user:{
 					...session.user,
 					id:token.id,
-					token:token.access_token,
+					//token:token.access_token,
+					token:token.accessToken
 				},
 				accessToken: token.accessToken,
 				iat: token.iat,  
