@@ -2,15 +2,15 @@ import generateUniqueId, { verifyPassword } from "@/helpers/auth";
 import { PrismaClient } from "@prisma/client";
 import NextAuth, { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { sign } from 'jsonwebtoken';
+import { SignJWT } from "jose";
 
 interface CustomUser extends User {
 	access_token: string;
 }
 
-declare module 'next-auth' {
+declare module "next-auth" {
 	interface Session {
-		accessToken?: string; 
+		accessToken?: string;
 	}
 }
 
@@ -23,7 +23,7 @@ export default NextAuth({
 			credentials: {
 				Email: { label: "Email", type: "text", placeholder: "jsmith" },
 				Password: { label: "Password", type: "password" },
-				Name: { label: "Name", type: "text", placeholder: "Your Name" }
+				Name: { label: "Name", type: "text", placeholder: "Your Name" },
 			},
 			async authorize(credentials): Promise<CustomUser | null> {
 				const JWT_SECRET = process.env.JWT_SECRET;
@@ -51,61 +51,69 @@ export default NextAuth({
 				if (!isValidPsw) {
 					throw new Error("Could not proceed with login");
 				}
-				
-				const uniqueUserId = generateUniqueId(existingUser.id, existingUser.Email);
-				
-				const accessToken = sign({ id: uniqueUserId, email: existingUser.Email, name:existingUser.Name }, JWT_SECRET, { expiresIn: '2h' });
+
+				const uniqueUserId = generateUniqueId(
+					existingUser.id,
+					existingUser.Email,
+				);
+
+				const secret = new TextEncoder().encode(JWT_SECRET);
+				const accessToken = await new SignJWT({
+					id: uniqueUserId,
+					email: existingUser.Email,
+					name: existingUser.Name,
+				})
+					.setProtectedHeader({ alg: "HS256" })
+					.setExpirationTime("2h")
+					.sign(secret);
 
 				await prisma.user.update({
-					where: { id: existingUser.id }, 
+					where: { id: existingUser.id },
 					data: {
-						UserID: uniqueUserId
-					}
+						UserID: uniqueUserId,
+					},
 				});
 
 				return {
 					id: existingUser.id.toString(),
 					email: existingUser.Email,
-					name:  existingUser.Name,
-					access_token: accessToken
+					name: existingUser.Name,
+					access_token: accessToken,
 				};
 			},
 		}),
 	],
 	callbacks: {
-		async jwt ({token, user, session}){
-			if(user){
-				const customUser = user as CustomUser; 
-            
-            	return {
-                	...token,
-                	id: customUser.id,              
-                	accessToken: customUser.access_token,
+		async jwt({ token, user, session }) {
+			if (user) {
+				const customUser = user as CustomUser;
+
+				return {
+					...token,
+					id: customUser.id,
+					accessToken: customUser.access_token,
 					iat: token.iat,
-					exp: token.exp,			
-            	};
+					exp: token.exp,
+				};
 			}
 			return token;
 		},
-		async session ({session, token, user}){
+		async session({ session, token, user }) {
 			return {
 				...session,
-				user:{
+				user: {
 					...session.user,
-					id:token.id,
-					//token:token.access_token,
-					token:token.accessToken
+					id: token.id,
+					token: token.accessToken,
 				},
 				accessToken: token.accessToken,
-				iat: token.iat,  
+				iat: token.iat,
 				exp: token.exp,
 			};
-
-		}
+		},
 	},
-	//secret:process.env.JWT_SECRET,
 	secret: process.env.NEXTAUTH_SECRET,
 	session: {
-		strategy: 'jwt',
+		strategy: "jwt",
 	},
 });

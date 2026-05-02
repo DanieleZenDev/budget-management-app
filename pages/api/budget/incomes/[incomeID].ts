@@ -8,27 +8,28 @@ type Incomes = {
 	message: string;
 	incomesData?: IncomesData | IncomesData[];
 };
-async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse<Incomes>
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 	const { incomeID }: any = req.query;
 	const userId = req.userId.id;
-	
+
 	if (req.method === "GET") {
 		try {
 			if (incomeID !== undefined) {
 				const income = await prisma.incomes.findUnique({
 					where: {
 						id: parseInt(incomeID),
-						UserId:userId
+						UserId: userId,
 					},
 				});
 
 				if (income) {
+					const incomeConverted = {
+						...income,
+						Import: Number(income.Import),
+					};
 					res.status(200).json({
 						message: "Income has been retrieved correctly by its id",
-						incomesData: income,
+						incomesData: incomeConverted,
 					});
 				} else {
 					res.status(404).json({ message: "Income not found" });
@@ -46,7 +47,7 @@ async function handler(
 			const updatedIncome = await prisma.incomes.update({
 				where: {
 					id: parseInt(incomeID),
-					UserId:userId
+					UserId: userId,
 				},
 				data: {
 					Income,
@@ -58,9 +59,13 @@ async function handler(
 				},
 			});
 			if (updatedIncome) {
+				const updatedIncomeConverted = {
+					...updatedIncome,
+					Import: Number(updatedIncome.Import),
+				};
 				res.status(200).json({
 					message: "Income updated successfully",
-					incomesData: updatedIncome,
+					incomesData: updatedIncomeConverted,
 				});
 			} else {
 				res.status(404).json({ message: "Income not found" });
@@ -74,7 +79,7 @@ async function handler(
 			const incomeToDelete = await prisma.incomes.delete({
 				where: {
 					id: parseInt(incomeID),
-					UserId:userId
+					UserId: userId,
 				},
 			});
 			if (incomeToDelete) {

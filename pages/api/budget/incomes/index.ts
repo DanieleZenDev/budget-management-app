@@ -22,7 +22,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 					Month,
 					Year,
 					User,
-					UserId:userId
+					UserId: userId,
 				},
 			});
 			res.status(201).json({
@@ -37,8 +37,18 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 		}
 	} else if (req.method === "GET") {
 		const months = [
-			"January", "February", "March", "April", "May", "June",
-			"July", "August", "September", "October", "November", "December"
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
 		];
 		const currentMonth = months[new Date().getMonth()];
 		const currentYear = new Date().getFullYear();
@@ -46,18 +56,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 		try {
 			const allIncomes = await prisma.incomes.findMany({
 				where: {
-                    UserId: userId,
-					Month:currentMonth,
-					Year:currentYear
-                },
+					UserId: userId,
+					Month: currentMonth,
+					Year: currentYear,
+				},
 				orderBy: {
 					id: "desc",
 				},
 			});
 			if (allIncomes) {
+				const incomesDataConverted = allIncomes.map((income) => ({
+					...income,
+					Import: Number(income.Import),
+				}));
 				res.status(201).json({
 					message: "all expenses data retrieved correctly",
-					incomesData: allIncomes,
+					incomesData: incomesDataConverted,
 				});
 			}
 		} catch (error) {
@@ -69,4 +83,3 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Incomes>) {
 	}
 }
 export default verifyToken(handler);
-

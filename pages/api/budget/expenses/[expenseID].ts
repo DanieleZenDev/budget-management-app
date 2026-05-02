@@ -8,27 +8,28 @@ type Expenses = {
 	message: string;
 	expensesData?: ExpensesData | ExpensesData[];
 };
-async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse<Expenses>
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 	const { expenseID }: any = req.query;
 	const userId = req.userId.id;
-	
+
 	if (req.method === "GET") {
 		try {
 			if (expenseID !== undefined) {
 				const expense = await prisma.expenses.findUnique({
 					where: {
 						id: parseInt(expenseID),
-						UserId:userId
+						UserId: userId,
 					},
 				});
 
 				if (expense) {
+					const expenseConverted = {
+						...expense,
+						Import: Number(expense.Import),
+					};
 					res.status(200).json({
 						message: "Expense has been retrieved correctly by its id",
-						expensesData: expense,
+						expensesData: expenseConverted,
 					});
 				} else {
 					res.status(404).json({ message: "Expense not found" });
@@ -46,7 +47,7 @@ async function handler(
 			const updatedExpense = await prisma.expenses.update({
 				where: {
 					id: parseInt(expenseID),
-					UserId:userId
+					UserId: userId,
 				},
 				data: {
 					Expense,
@@ -58,9 +59,13 @@ async function handler(
 				},
 			});
 			if (updatedExpense) {
+				const updatedExpenseConverted = {
+					...updatedExpense,
+					Import: Number(updatedExpense.Import),
+				};
 				res.status(200).json({
 					message: "Expense updated successfully",
-					expensesData: updatedExpense,
+					expensesData: updatedExpenseConverted,
 				});
 			} else {
 				res.status(404).json({ message: "Expense not found" });
@@ -74,7 +79,7 @@ async function handler(
 			const expenseToDelete = await prisma.expenses.delete({
 				where: {
 					id: parseInt(expenseID),
-					UserId:userId
+					UserId: userId,
 				},
 			});
 			if (expenseToDelete) {

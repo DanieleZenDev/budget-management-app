@@ -8,27 +8,28 @@ type Savings = {
 	message: string;
 	savingsData?: SavingsData | SavingsData[];
 };
-async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse<Savings>
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 	const { savingID }: any = req.query;
 	const userId = req.userId.id;
-	
+
 	if (req.method === "GET") {
 		try {
 			if (savingID !== undefined) {
 				const saving = await prisma.savings.findUnique({
 					where: {
 						id: parseInt(savingID),
-						UserId:userId
+						UserId: userId,
 					},
 				});
 
 				if (saving) {
+					const savingConverted = {
+						...saving,
+						Import: Number(saving.Import),
+					};
 					res.status(200).json({
 						message: "Saving has been retrieved correctly by its id",
-						savingsData: saving,
+						savingsData: savingConverted,
 					});
 				} else {
 					res.status(404).json({ message: "Saving not found" });
@@ -46,7 +47,7 @@ async function handler(
 			const updatedSaving = await prisma.savings.update({
 				where: {
 					id: parseInt(savingID),
-					UserId:userId
+					UserId: userId,
 				},
 				data: {
 					Saving,
@@ -58,9 +59,13 @@ async function handler(
 				},
 			});
 			if (updatedSaving) {
+				const updatedSavingConverted = {
+					...updatedSaving,
+					Import: Number(updatedSaving.Import),
+				};
 				res.status(200).json({
 					message: "Saving updated successfully",
-					savingsData: updatedSaving,
+					savingsData: updatedSavingConverted,
 				});
 			} else {
 				res.status(404).json({ message: "Saving not found" });
@@ -74,7 +79,7 @@ async function handler(
 			const savingToDelete = await prisma.savings.delete({
 				where: {
 					id: parseInt(savingID),
-					UserId:userId
+					UserId: userId,
 				},
 			});
 			if (savingToDelete) {

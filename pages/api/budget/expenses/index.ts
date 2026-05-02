@@ -10,12 +10,11 @@ type Expenses = {
 };
 async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 	const userId = req.userId.id;
-	
+
 	if (req.method === "POST") {
 		const { Category, Expense, Import, Month, Year, User } = req.body;
-		
+
 		try {
-			
 			const enteredExpenses = await prisma.expenses.create({
 				data: {
 					Category,
@@ -24,7 +23,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 					Month,
 					Year,
 					User,
-					UserId:userId
+					UserId: userId,
 				},
 			});
 			res.status(201).json({
@@ -39,29 +38,42 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
 		}
 	} else if (req.method === "GET") {
 		const months = [
-			"January", "February", "March", "April", "May", "June",
-			"July", "August", "September", "October", "November", "December"
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
 		];
 		const currentYear = new Date().getFullYear();
 		const currentMonth = months[new Date().getMonth()];
-		
+
 		try {
 			const allExpenses = await prisma.expenses.findMany({
 				where: {
-                    UserId: userId, 
-					Month:currentMonth,
-					Year:currentYear
-					
-                },
+					UserId: userId,
+					Month: currentMonth,
+					Year: currentYear,
+				},
 				orderBy: {
 					id: "desc",
 				},
 			});
 
 			if (allExpenses) {
+				const expensesDataConverted = allExpenses.map((expense) => ({
+					...expense,
+					Import: Number(expense.Import),
+				}));
 				return res.status(200).json({
 					message: "all expenses data retrieved correctly",
-					expensesData: allExpenses,
+					expensesData: expensesDataConverted,
 				});
 			}
 		} catch (error) {

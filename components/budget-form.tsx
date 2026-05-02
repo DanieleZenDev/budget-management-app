@@ -1,4 +1,3 @@
-
 import { Prisma } from "@prisma/client";
 import {
 	postExpensesData,
@@ -26,11 +25,10 @@ const BudgetForm = ({
 	selectedincomesById,
 	selectedSavingsById,
 }: BudgetFormData) => {
-	
 	const users = ["Daniele", "Giulia"];
 	const router = useRouter();
 
-	const { data:session } = useSession();
+	const { data: session } = useSession();
 	const accessToken = session?.accessToken;
 
 	let fullUrl = router.asPath;
@@ -41,21 +39,18 @@ const BudgetForm = ({
 	let userValue = null;
 
 	if (selectedExpenseById) {
-		
 		categoryValue = selectedExpenseById.Category;
 		budgetValue = selectedExpenseById.Expense;
 		importValue = selectedExpenseById.Import;
 		userValue = selectedExpenseById.User;
 	}
 	if (selectedincomesById) {
-		
 		categoryValue = selectedincomesById.Category;
 		budgetValue = selectedincomesById.Income;
 		importValue = selectedincomesById.Import;
 		userValue = selectedincomesById.User;
 	}
 	if (selectedSavingsById) {
-		
 		categoryValue = selectedSavingsById.Category;
 		budgetValue = selectedSavingsById.Saving;
 		importValue = selectedSavingsById.Import;
@@ -63,36 +58,36 @@ const BudgetForm = ({
 	}
 
 	function getNumberFromDecimal(value: Prisma.Decimal | number): number {
-		if (typeof value === 'object' && 'toNumber' in value) {
-			return value.toNumber();  
+		if (typeof value === "object" && "toNumber" in value) {
+			return value.toNumber();
 		}
-		return typeof value === 'number' ? value : Number(value);
+		return typeof value === "number" ? value : Number(value);
 	}
 
 	const formRef = useRef<HTMLFormElement>(null);
-	//const budgetCategoryRef = useRef<HTMLSelectElement>(null);
 	const budgetCategoryRef = useRef<HTMLInputElement>(null);
 	const budgetOperationTypeRef = useRef<HTMLInputElement>(null);
 	const budgetImportRef = useRef<HTMLInputElement>(null);
-	//const userInputRef = useRef<HTMLSelectElement>(null);
 	const userInputRef = useRef<HTMLInputElement>(null);
 
 	const actualYear = new Date().getFullYear();
 
 	const date = new Date();
 	const actualMonth = date.toLocaleString("default", { month: "long" });
-	
 
 	const submitBudgetData = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		const budgetCategoryEnteredValue = budgetCategoryRef.current?.value || "";
-		let budgetOperationTypeEnteredValue = budgetOperationTypeRef.current?.value || "";
+		let budgetOperationTypeEnteredValue =
+			budgetOperationTypeRef.current?.value || "";
 		const budgetImportRefEnteredValue = budgetImportRef.current?.value || "";
 		const userEnteredValue = userInputRef.current?.value || "";
 
-		const importValue = budgetImportRefEnteredValue ? Number(budgetImportRefEnteredValue) : 0;
-		
+		const importValue = budgetImportRefEnteredValue
+			? Number(budgetImportRefEnteredValue)
+			: 0;
+
 		let budgetDataToPass = null;
 
 		if (fullUrl === "/expenses") {
@@ -104,7 +99,7 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			
+
 			postExpensesData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
@@ -122,8 +117,12 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			
-			updateExpenseById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
+
+			updateExpenseById(
+				budgetDataToPass,
+				parseInt(String(dynamicId)),
+				accessToken,
+			);
 			router.push("/expenses");
 		} else if (fullUrl === "/incomes") {
 			budgetDataToPass = {
@@ -134,7 +133,7 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			
+
 			postIncomesData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
@@ -152,7 +151,11 @@ const BudgetForm = ({
 				User: userEnteredValue,
 			};
 
-			updateIncomeById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
+			updateIncomeById(
+				budgetDataToPass,
+				parseInt(String(dynamicId)),
+				accessToken,
+			);
 			router.push("/incomes");
 		} else if (fullUrl === "/savings") {
 			budgetDataToPass = {
@@ -163,7 +166,7 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-			
+
 			postSavingsData(budgetDataToPass, accessToken);
 			if (formRef.current) {
 				formRef.current.querySelectorAll("input").forEach((input) => {
@@ -180,11 +183,14 @@ const BudgetForm = ({
 				Year: actualYear,
 				User: userEnteredValue,
 			};
-		
-			updateSavingById(budgetDataToPass, parseInt(String(dynamicId)), accessToken);
+
+			updateSavingById(
+				budgetDataToPass,
+				parseInt(String(dynamicId)),
+				accessToken,
+			);
 			router.push("/savings");
 		}
-		
 	};
 
 	return (
@@ -195,21 +201,6 @@ const BudgetForm = ({
 				</h1>
 				<form className="px-6 py-4" onSubmit={submitBudgetData} ref={formRef}>
 					<div className="mb-[0.5rem]">
-						
-						{/* <h1 className="block text-gray-700 text-sm font-bold mb-2">
-							Category
-						</h1>
-						<select
-							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
-							name={category}
-							defaultValue={categoryValue ?? ""}
-							ref={budgetCategoryRef}
-						>
-							{categoryList.map((scategory, idx) => (
-								<option key={idx}>{scategory}</option>
-							))}
-						</select>
-							 */}
 						<label
 							htmlFor={category}
 							className="block text-gray-700 text-sm font-bold mb-2"
@@ -252,26 +243,17 @@ const BudgetForm = ({
 							type="number"
 							id={importAmount}
 							required
-							defaultValue={importValue !== null && importValue !== undefined ? getNumberFromDecimal(importValue) : ""}
+							defaultValue={
+								importValue !== null && importValue !== undefined
+									? getNumberFromDecimal(importValue)
+									: ""
+							}
 							ref={budgetImportRef}
-							step="0.01"  
+							step="0.01"
 							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
 						/>
 					</div>
 					<div className="mb-[0.5rem]">
-						{/* <h1 className="block text-gray-700 text-sm font-bold mb-2">
-							Users
-						</h1>
-						<select
-							className="bg-gray-100 border border-gray-300 rounded-md w-full text-left px-1"
-							name="user"
-							ref={userInputRef}
-							defaultValue={userValue ?? ""}
-						>
-							{users.map((user, idx) => (
-								<option key={idx}>{user}</option>
-							))}
-						</select> */}
 						<label
 							htmlFor="user"
 							className="block text-gray-700 text-sm font-bold mb-2"

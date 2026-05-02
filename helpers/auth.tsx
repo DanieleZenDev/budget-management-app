@@ -7,15 +7,15 @@ import {
 } from "@/types";
 import { hash, compare } from "bcryptjs";
 
-import { createHash } from 'crypto';
+import { createHash } from "crypto";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-export default function generateUniqueId (userId:number, email:string) {
-    const hash = createHash('sha256');
-    hash.update(`${userId}-${email}`); 
-    return hash.digest('hex'); 
-};
+export default function generateUniqueId(userId: number, email: string) {
+	const hash = createHash("sha256");
+	hash.update(`${userId}-${email}`);
+	return hash.digest("hex");
+}
 
 export async function hashPassword(enteredPassword: string) {
 	const hashedPassword = await hash(enteredPassword, 12);
@@ -30,7 +30,6 @@ export async function verifyPassword({
 	return isValidPsw;
 }
 
-
 export async function postUserData(enteredSignupData: UserData) {
 	try {
 		const response = await fetch("/api/auth/signup", {
@@ -42,9 +41,9 @@ export async function postUserData(enteredSignupData: UserData) {
 		});
 		console.log("res", response);
 		if (!response.ok) {
-			const errorData = await response.json(); 
+			const errorData = await response.json();
 			if (Array.isArray(errorData.message)) {
-				return { error: errorData.message }; 
+				return { error: errorData.message };
 			}
 
 			return { error: [errorData.message] };
@@ -52,22 +51,25 @@ export async function postUserData(enteredSignupData: UserData) {
 		const data = await response.json();
 		return { data };
 	} catch (error) {
-		return { error: [error] }; 
+		const errorMessage = error instanceof Error ? error.message : String(error);
+		return { error: [errorMessage] };
 	}
 }
 
-export async function postExpensesData(enteredExpensesData: ExpensesData, userToken:string | undefined) {
-	
+export async function postExpensesData(
+	enteredExpensesData: ExpensesData,
+	userToken: string | undefined,
+) {
 	if (!userToken) {
-        console.error("Access token is missing or invalid.");
-    }
-	
+		console.error("Access token is missing or invalid.");
+	}
+
 	try {
 		const response = await fetch("/api/budget/expenses", {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
-				"Authorization": `Bearer ${userToken}`
+				Authorization: `Bearer ${userToken}`,
 			},
 			body: JSON.stringify(enteredExpensesData),
 		});
@@ -79,23 +81,25 @@ export async function postExpensesData(enteredExpensesData: ExpensesData, userTo
 	} catch (error) {
 		console.error(
 			"There was a problem while passing the expenses data:",
-			error
+			error,
 		);
 	}
 }
 
-export async function postIncomesData(enteredIncomesData: IncomesData, userToken:string | undefined) {
-	
+export async function postIncomesData(
+	enteredIncomesData: IncomesData,
+	userToken: string | undefined,
+) {
 	if (!userToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	try {
 		const response = await fetch("/api/budget/incomes", {
 			method: "POST",
 			headers: {
 				"Content-type": "application/json",
-				"Authorization": `Bearer ${userToken}`
+				Authorization: `Bearer ${userToken}`,
 			},
 			body: JSON.stringify(enteredIncomesData),
 		});
@@ -109,19 +113,21 @@ export async function postIncomesData(enteredIncomesData: IncomesData, userToken
 	}
 }
 
-export async function postSavingsData(enteredSavingsData: SavingsData, userToken:string | undefined) {
-
+export async function postSavingsData(
+	enteredSavingsData: SavingsData,
+	userToken: string | undefined,
+) {
 	if (!userToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 	const headersToPass = {
 		method: "POST",
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${userToken}`
+			Authorization: `Bearer ${userToken}`,
 		},
-		body: JSON.stringify(enteredSavingsData)
-	}
+		body: JSON.stringify(enteredSavingsData),
+	};
 
 	try {
 		const response = await fetch("/api/budget/savings", headersToPass);
@@ -135,21 +141,23 @@ export async function postSavingsData(enteredSavingsData: SavingsData, userToken
 	}
 }
 
-export async function getExpensesData(accessToken:string | undefined) {
-	
+export async function getExpensesData(accessToken: string | undefined) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/expenses`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/expenses`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -158,26 +166,28 @@ export async function getExpensesData(accessToken:string | undefined) {
 	} catch (error) {
 		console.error(
 			"There was a problem in retrieving the expenses data:",
-			error
+			error,
 		);
 	}
 }
 
-export async function getAllExpensesData(accessToken:string | undefined) {
-	
+export async function getAllExpensesData(accessToken: string | undefined) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/allexpenses`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/allexpenses`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -186,26 +196,28 @@ export async function getAllExpensesData(accessToken:string | undefined) {
 	} catch (error) {
 		console.error(
 			"There was a problem in retrieving the expenses data:",
-			error
+			error,
 		);
 	}
 }
 
-export async function getIncomesData(accessToken:string | undefined) {
-	
+export async function getIncomesData(accessToken: string | undefined) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
-	
+		console.error("Access token is missing or invalid.");
+	}
+
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/incomes`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/incomes`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -216,21 +228,23 @@ export async function getIncomesData(accessToken:string | undefined) {
 	}
 }
 
-export async function getAllIncomesData(accessToken:string | undefined) {
-	
+export async function getAllIncomesData(accessToken: string | undefined) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
-	
+		console.error("Access token is missing or invalid.");
+	}
+
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/allincomes`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/allincomes`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -241,21 +255,23 @@ export async function getAllIncomesData(accessToken:string | undefined) {
 	}
 }
 
-export async function getSavingsData(accessToken:string | undefined) {
-	
+export async function getSavingsData(accessToken: string | undefined) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/savings`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/savings`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -266,21 +282,23 @@ export async function getSavingsData(accessToken:string | undefined) {
 	}
 }
 
-export async function getAllSavingsData(accessToken:string | undefined) {
-	
+export async function getAllSavingsData(accessToken: string | undefined) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/allsavings`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/allsavings`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -291,19 +309,25 @@ export async function getAllSavingsData(accessToken:string | undefined) {
 	}
 }
 
-export async function getExpenseById(id: number, accessToken:string | undefined) {
+export async function getExpenseById(
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/expenses/${id}`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/expenses/${id}`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -312,23 +336,29 @@ export async function getExpenseById(id: number, accessToken:string | undefined)
 	} catch (error) {
 		console.error(
 			"There was a problem in retrieving the expenses data by its id:",
-			error
+			error,
 		);
 	}
 }
 
-export async function getIncomeById(id: number, accessToken:string | undefined) {
+export async function getIncomeById(
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/incomes/${id}`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/incomes/${id}`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -337,25 +367,30 @@ export async function getIncomeById(id: number, accessToken:string | undefined) 
 	} catch (error) {
 		console.error(
 			"There was a problem in retrieving the expenses data by its id:",
-			error
+			error,
 		);
 	}
 }
 
-export async function getSavingById(id: number, accessToken:string | undefined) {
-	
+export async function getSavingById(
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 	const headersToPass = {
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
-	}
+	};
 
 	try {
-		const response = await fetch(`${baseUrl}/api/budget/savings/${id}`, headersToPass);
+		const response = await fetch(
+			`${baseUrl}/api/budget/savings/${id}`,
+			headersToPass,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}
@@ -364,24 +399,28 @@ export async function getSavingById(id: number, accessToken:string | undefined) 
 	} catch (error) {
 		console.error(
 			"There was a problem in retrieving the savings data by its id:",
-			error
+			error,
 		);
 	}
 }
 
-export async function updateExpenseById(enteredExpensesData: ExpensesData,id: number, accessToken:string | undefined) {
+export async function updateExpenseById(
+	enteredExpensesData: ExpensesData,
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
-		method:"PUT",
+		method: "PUT",
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
 		body: JSON.stringify(enteredExpensesData),
-	}
+	};
 
 	try {
 		const response = await fetch(`/api/budget/expenses/${id}`, headersToPass);
@@ -393,25 +432,28 @@ export async function updateExpenseById(enteredExpensesData: ExpensesData,id: nu
 	} catch (error) {
 		console.error(
 			"There was a problem while updating the expenses data:",
-			error
+			error,
 		);
 	}
 }
 
-export async function updateIncomeById(enteredIncomesData: IncomesData,id: number, accessToken:string | undefined) {
-	
+export async function updateIncomeById(
+	enteredIncomesData: IncomesData,
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
-		method:"PUT",
+		method: "PUT",
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
 		body: JSON.stringify(enteredIncomesData),
-	}
+	};
 
 	try {
 		const response = await fetch(`/api/budget/incomes/${id}`, headersToPass);
@@ -423,26 +465,29 @@ export async function updateIncomeById(enteredIncomesData: IncomesData,id: numbe
 	} catch (error) {
 		console.error(
 			"There was a problem while updating the incomes data:",
-			error
+			error,
 		);
 	}
 }
 
-export async function updateSavingById(enteredSavingsData: SavingsData,id: number, accessToken:string | undefined) {
-	
+export async function updateSavingById(
+	enteredSavingsData: SavingsData,
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
-		method:"PUT",
+		method: "PUT",
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			Authorization: `Bearer ${accessToken}`,
 		},
 		body: JSON.stringify(enteredSavingsData),
-	}
-	
+	};
+
 	try {
 		const response = await fetch(`/api/budget/savings/${id}`, headersToPass);
 		if (!response.ok) {
@@ -453,24 +498,26 @@ export async function updateSavingById(enteredSavingsData: SavingsData,id: numbe
 	} catch (error) {
 		console.error(
 			"There was a problem while updating the savings data:",
-			error
+			error,
 		);
 	}
 }
 
-export async function deleteExpenseById(id: number, accessToken:string | undefined) {
-	
+export async function deleteExpenseById(
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
-		method:"DELETE",
+		method: "DELETE",
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
-		}
-	}
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
 
 	try {
 		const response = await fetch(`/api/budget/expenses/${id}`, headersToPass);
@@ -483,24 +530,26 @@ export async function deleteExpenseById(id: number, accessToken:string | undefin
 	} catch (error) {
 		console.error(
 			"There was a problem while deleting the expense data:",
-			error
+			error,
 		);
 	}
 }
 
-export async function deleteIncomeById(id: number, accessToken:string | undefined) {
-	
+export async function deleteIncomeById(
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
-		method:"DELETE",
+		method: "DELETE",
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
-		}
-	}
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
 
 	try {
 		const response = await fetch(`/api/budget/incomes/${id}`, headersToPass);
@@ -514,19 +563,21 @@ export async function deleteIncomeById(id: number, accessToken:string | undefine
 	}
 }
 
-export async function deleteSavingById(id: number, accessToken:string | undefined) {
-
+export async function deleteSavingById(
+	id: number,
+	accessToken: string | undefined,
+) {
 	if (!accessToken) {
-        console.error("Access token is missing or invalid.");
-    }
+		console.error("Access token is missing or invalid.");
+	}
 
 	const headersToPass = {
-		method:"DELETE",
+		method: "DELETE",
 		headers: {
 			"Content-type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
-		}
-	}
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
 
 	try {
 		const response = await fetch(`/api/budget/savings/${id}`, headersToPass);
@@ -540,4 +591,105 @@ export async function deleteSavingById(id: number, accessToken:string | undefine
 	}
 }
 
+export async function getExpensesTrendPerYearAndCategory(
+	accessToken: string | undefined,
+	year: number | undefined,
+	category: string | undefined,
+) {
+	if (!accessToken) {
+		console.error("Access token is missing or invalid.");
+	}
 
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
+
+	try {
+		const response = await fetch(
+			`${baseUrl}/api/budget/filteredexpenses?category=${category}&year=${year}`,
+			headersToPass,
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the expenses data:",
+			error,
+		);
+	}
+}
+
+export async function getExpensesTrendPerYearAndMonthGroupByCategory(
+	accessToken: string | undefined,
+	year: number | undefined,
+	month: string | undefined,
+) {
+	if (!accessToken) {
+		console.error("Access token is missing or invalid.");
+	}
+
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
+
+	try {
+		const response = await fetch(
+			`${baseUrl}/api/budget/pietrendexpenses?year=${year}&month=${month}`,
+			headersToPass,
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the expenses data:",
+			error,
+		);
+	}
+}
+
+export async function getExpensesIncidence(
+	accessToken: string | undefined,
+	year: number | undefined,
+	month: string | undefined,
+	category: string | undefined,
+) {
+	if (!accessToken) {
+		console.error("Access token is missing or invalid.");
+	}
+
+	const headersToPass = {
+		headers: {
+			"Content-type": "application/json",
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
+
+	try {
+		const response = await fetch(
+			`${baseUrl}/api/budget/expensesincidences?year=${year}&month=${month}&category=${category}`,
+			headersToPass,
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(
+			"There was a problem in retrieving the incidence data:",
+			error,
+		);
+	}
+}

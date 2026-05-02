@@ -2,18 +2,17 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/helpers/auth";
 import { UserData } from "@/types";
-import { sign } from 'jsonwebtoken';
+import { SignJWT } from "jose";
 const prisma = new PrismaClient();
 
 type Data = {
 	message: string | string[];
 	userdata?: UserData;
-	accessToken?:string;
+	accessToken?: string;
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 	if (req.method === "POST") {
-
 		const JWT_SECRET = process.env.JWT_SECRET;
 
 		if (!JWT_SECRET) {
@@ -21,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 		}
 
 		const { Name, Email, Password } = req.body;
-	
+
 		const errors: string[] = [];
 
 		if (!Email) {
@@ -54,20 +53,28 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 			if (existingUser) {
 				return res.status(422).json({ message: "User already exists" });
 			}
-		
+
 			const userData = await prisma.user.create({
 				data: {
-					Name:Name,
+					Name: Name,
 					Email: Email,
-					Password: hashedPassword
+					Password: hashedPassword,
 				},
 			});
-			
-			const accessToken = sign({ id: userData.id, email: userData.Email,  name:userData.Name }, JWT_SECRET, { expiresIn: '2h' });
-			
-			return res	
+
+			const secret = new TextEncoder().encode(JWT_SECRET);
+			const accessToken = await new SignJWT({
+				id: userData.id,
+				email: userData.Email,
+				name: userData.Name,
+			})
+				.setProtectedHeader({ alg: "HS256" })
+				.setExpirationTime("2h")
+				.sign(secret);
+
+			return res
 				.status(201)
-				.json({ message: "Created the user", userdata: userData, accessToken});
+				.json({ message: "Created the user", userdata: userData, accessToken });
 		} catch (error) {
 			console.error("Error creating user:", error);
 			return res.status(500).json({ message: "Internal server error" });

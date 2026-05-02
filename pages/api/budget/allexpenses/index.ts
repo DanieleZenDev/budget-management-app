@@ -10,27 +10,30 @@ type Expenses = {
 	expensesData?: ExpensesData | ExpensesData[];
 };
 
-async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>){
-    const userId = req.userId.id;
+async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>) {
+	const userId = req.userId.id;
 	try {
-		if(req.method === 'GET'){
+		if (req.method === "GET") {
 			try {
 				const allExpenses = await prisma.expenses.findMany({
 					where: {
-						UserId: userId, 
+						UserId: userId,
 					},
 					orderBy: {
 						id: "desc",
 					},
 				});
-	
+
 				if (allExpenses) {
+					const expensesDataConverted = allExpenses.map((expense) => ({
+						...expense,
+						Import: Number(expense.Import),
+					}));
 					return res.status(200).json({
 						message: "all expenses data retrieved correctly",
-						expensesData: allExpenses,
+						expensesData: expensesDataConverted,
 					});
 				}
-
 			} catch (error) {
 				console.error("Error in passing the expenses data:", error);
 				return res.status(500).json({
@@ -40,10 +43,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Expenses>){
 		}
 	} catch (error) {
 		console.error("Error in passing the expenses data:", error);
-			return res.status(500).json({
-				message: "Internal server error - could not get the expenses data",
+		return res.status(500).json({
+			message: "Internal server error - could not get the expenses data",
 		});
 	}
-    
 }
 export default verifyToken(handler);

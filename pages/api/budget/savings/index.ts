@@ -21,18 +21,28 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 					Month,
 					Year,
 					User,
-					UserId:userId
+					UserId: userId,
 				},
 			});
-	
+
 			res.status(201).json({
 				message: "savings data passed successfully",
 				savingsData: enteredSaving,
 			});
 		} else if (req.method === "GET") {
 			const months = [
-				"January", "February", "March", "April", "May", "June",
-				"July", "August", "September", "October", "November", "December"
+				"January",
+				"February",
+				"March",
+				"April",
+				"May",
+				"June",
+				"July",
+				"August",
+				"September",
+				"October",
+				"November",
+				"December",
 			];
 			const currentMonth = months[new Date().getMonth()];
 			const currentYear = new Date().getFullYear();
@@ -41,18 +51,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Savings>) {
 				const allSavings = await prisma.savings.findMany({
 					where: {
 						UserId: userId,
-						Month:currentMonth,
-						Year:currentYear
+						Month: currentMonth,
+						Year: currentYear,
 					},
 					orderBy: {
 						id: "desc",
 					},
 				});
-			
+
 				if (allSavings) {
+					const savingsDataConverted = allSavings.map((saving) => ({
+						...saving,
+						Import: Number(saving.Import),
+					}));
 					res.status(201).json({
 						message: "all savings data retrieved correctly",
-						savingsData: allSavings,
+						savingsData: savingsDataConverted,
 					});
 				}
 			} catch (error) {
