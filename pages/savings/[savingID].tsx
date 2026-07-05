@@ -54,7 +54,6 @@ const SavingDetailsPage = ({
 				<button onClick={deleteSavingByIdFunction}>Delete this saving</button>
 				{showUpdateForm && (
 					<BudgetForm
-						categoryList={savingsCategory}
 						category="savings"
 						operationType="saving"
 						importAmount="savingImport"
