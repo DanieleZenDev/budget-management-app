@@ -6,7 +6,8 @@ import {
 	getExpensesTrendPerYearAndMonthGroupByCategory,
 	getExpensesIncidence,
 } from "@/helpers/auth";
-import { expensesCategory, months } from "@/helpers/applicationData";
+import { months } from "@/helpers/applicationData";
+import { useCategories } from "@/hooks/useCategories";
 
 import {
 	LineChart,
@@ -44,8 +45,13 @@ type IncidenceData = {
 	categoryTotal: number;
 	incidencePercentage: number;
 };
+
 const ExpensesTrend = (props: accessToken) => {
 	const accessToken = props.accessToken;
+	const { categories: expensesCategory } = useCategories(
+		"Expenses",
+		accessToken,
+	);
 
 	const [year, setYear] = useState<number | null>(null);
 	const [category, setCategory] = useState<string | null>(null);

@@ -8,7 +8,6 @@ import Link from "next/link";
 import { getSession } from "next-auth/react";
 
 import { Fragment, useState } from "react";
-import { expensesCategory } from "@/helpers/applicationData";
 
 type PageProps = {
 	expenses: {
@@ -17,7 +16,6 @@ type PageProps = {
 };
 
 const ExpensesPage = (props: PageProps) => {
-	
 	const { expensesData } = props.expenses;
 
 	const [visibleExpenses, setVisibleExpenses] = useState(10);
@@ -25,30 +23,29 @@ const ExpensesPage = (props: PageProps) => {
 
 	const loadMoreExpenses = () => {
 		setVisibleExpenses(
-			(prevVisibleExpenses) => prevVisibleExpenses + expensesPerPage
+			(prevVisibleExpenses) => prevVisibleExpenses + expensesPerPage,
 		);
 	};
 	const hideExpenses = () => {
 		setVisibleExpenses((prevVisibleExpenses) =>
-			Math.max(0, prevVisibleExpenses - expensesPerPage)
+			Math.max(0, prevVisibleExpenses - expensesPerPage),
 		);
 	};
-	
+
 	if (!Array.isArray(expensesData) || expensesData.length === 0) {
-        return (
-            <Fragment>
-                <h1>There are no expenses yet, please enter one.</h1>
-                <BudgetForm 
-                    categoryList={expensesCategory} 
-                    category="expenses" 
-                    operationType="expense" 
-                    importAmount="expensesImport" 
-                    formTitle="Expenses form" 
-                    dataEntryType="Post" 
-                />
-            </Fragment>
-        );
-    }
+		return (
+			<Fragment>
+				<h1>There are no expenses yet, please enter one.</h1>
+				<BudgetForm
+					category="expenses"
+					operationType="expense"
+					importAmount="expensesImport"
+					formTitle="Expenses form"
+					dataEntryType="Post"
+				/>
+			</Fragment>
+		);
+	}
 
 	return (
 		<Fragment>
@@ -59,7 +56,6 @@ const ExpensesPage = (props: PageProps) => {
 			<div>
 				<section className="flex flex-col justify-center gap-4">
 					<BudgetForm
-						categoryList={expensesCategory}
 						category="expenses"
 						operationType="expense"
 						importAmount="expenseImport"
@@ -67,30 +63,31 @@ const ExpensesPage = (props: PageProps) => {
 						dataEntryType="Post"
 					/>
 					<div className="flex flex-wrap gap-4">
-						
-					{expensesData.length < 10 ? expensesData.map((expense, index) => (
-							<div>
-								<Link key={index} href={`/expenses/${expense.id}`}>
-									<BudgetDataPanel
-										budgetCategory={expense.Category}
-										user={expense.User}
-										budgetImport={expense.Import}
-										budgetOperation={expense.Expense}
-									/>
-								</Link>
-							</div>
-						)) : expensesData.slice(0, visibleExpenses).map((expense, index) => (
-							<div>
-								<Link key={index} href={`/expenses/${expense.id}`}>
-									<BudgetDataPanel
-										budgetCategory={expense.Category}
-										user={expense.User}
-										budgetImport={expense.Import}
-										budgetOperation={expense.Expense}
-									/>
-								</Link>
-							</div>
-						))} 
+						{expensesData.length < 10
+							? expensesData.map((expense, index) => (
+									<div>
+										<Link key={index} href={`/expenses/${expense.id}`}>
+											<BudgetDataPanel
+												budgetCategory={expense.Category}
+												user={expense.User}
+												budgetImport={expense.Import}
+												budgetOperation={expense.Expense}
+											/>
+										</Link>
+									</div>
+								))
+							: expensesData.slice(0, visibleExpenses).map((expense, index) => (
+									<div>
+										<Link key={index} href={`/expenses/${expense.id}`}>
+											<BudgetDataPanel
+												budgetCategory={expense.Category}
+												user={expense.User}
+												budgetImport={expense.Import}
+												budgetOperation={expense.Expense}
+											/>
+										</Link>
+									</div>
+								))}
 						<div className="flex flex-col gap-1">
 							{expensesData.length > visibleExpenses && (
 								<button onClick={loadMoreExpenses}>Mostra altre spese</button>
@@ -99,7 +96,6 @@ const ExpensesPage = (props: PageProps) => {
 								<button onClick={hideExpenses}>Nascondi 10 spese</button>
 							)}
 						</div>
-						
 					</div>
 				</section>
 			</div>
@@ -107,24 +103,26 @@ const ExpensesPage = (props: PageProps) => {
 	);
 };
 
-export async function getServerSideProps(context: GetSessionParams | undefined) {
-    const session = await getSession(context);
+export async function getServerSideProps(
+	context: GetSessionParams | undefined,
+) {
+	const session = await getSession(context);
 
-    if (!session || !session.accessToken) {
-        return {
-            redirect: {
-                destination: '/auth',
-                permanent: false,
-            },
-        };
-    }
+	if (!session || !session.accessToken) {
+		return {
+			redirect: {
+				destination: "/auth",
+				permanent: false,
+			},
+		};
+	}
 
-    const allExpenses = await getExpensesData(session?.accessToken);
-	
-    const allExpensesToPass = allExpenses || [];
+	const allExpenses = await getExpensesData(session?.accessToken);
 
-    return {
-        props: { expenses: allExpensesToPass },
-    };
+	const allExpensesToPass = allExpenses || [];
+
+	return {
+		props: { expenses: allExpensesToPass },
+	};
 }
 export default ExpensesPage;

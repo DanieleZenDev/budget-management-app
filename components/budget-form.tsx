@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 import { useRef } from "react";
 
 const BudgetForm = ({
-	categoryList,
 	category,
 	operationType,
 	importAmount,
